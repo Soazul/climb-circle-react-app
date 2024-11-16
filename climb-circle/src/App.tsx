@@ -1,9 +1,10 @@
-import React from 'react';
-import logo from './logo.svg';
+
 import './App.css';
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import Home from './Home';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Profile from './Profile';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="Home" />} />
             <Route path="/Home/*" element={<Home />} />
+            <Route path="/Profile/*" element={<Profile />} />
           </Routes>
         </div>
     </HashRouter>

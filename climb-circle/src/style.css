@@ -1,0 +1,15 @@
+.blue-btn {
+    background-color: #0023D3;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.gray-btn {
+    background-color: #A3B1BE;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
