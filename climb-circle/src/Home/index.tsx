@@ -1,6 +1,10 @@
 import Card from './Card';
 import Login from '../Login/login';
 import SignUp from '../Login/signup';
+import { Link } from 'react-router-dom';
+import Header from '../Header.tsx';
+import { BsPlusCircle } from 'react-icons/bs';
+import Create from '../Create';
 
 export default function Home() {
     const climbs = [
@@ -15,12 +19,7 @@ export default function Home() {
     return (
         <div id="home" className="py-4" style={{ padding: '15px' }}> 
             <div className="row mb-4">
-                <div className="col-12 col-md-6 mb-3 mb-md-0">
-                    <div className="input-group px-2">
-                        <img src="../images/icon.png" alt="" height="40px" width="40px"/>
-                        <input className="form-control rounded ms-3"  placeholder="Search" />
-                    </div>
-                </div>
+                <Header/>
                 <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
                     <button className="blue-btn me-3" data-bs-toggle="modal" data-bs-target="#login-modal">
                         Log In
@@ -40,6 +39,8 @@ export default function Home() {
                     </div>
                 ))}
             </div>
+            <BsPlusCircle size={'30px'} style={{color: '#A3B1BE'}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
+            <Create/>
         </div>
     );
 }

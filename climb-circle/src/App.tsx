@@ -3,6 +3,7 @@ import './App.css';
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import Home from './Home';
 import Profile from './Profile';
+import Map from './Map';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/" element={<Navigate to="Home" />} />
             <Route path="/Home/*" element={<Home />} />
             <Route path="/Profile/*" element={<Profile />} />
+            <Route path="/Map" element={<Map />} />
           </Routes>
         </div>
     </HashRouter>
