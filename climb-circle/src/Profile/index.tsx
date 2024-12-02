@@ -1,4 +1,5 @@
 import Card from '../Home/Card';
+import Header from '../Header';
 
 export default function Profile() {
     const climbs = [
@@ -11,17 +12,13 @@ export default function Profile() {
     ];
 
     return (
-        <div id="home" className="py-4" style={{ padding: '15px' }}> 
-        <h1>PROFILE page</h1>
+        <div id="profile" className="py-4" style={{ padding: '15px' }}> 
             <div className="row mb-4">
-                <div className="col-12 col-md-6 mb-3 mb-md-0">
-                    <div className="input-group px-2">
-                        <img src="../images/icon.png" alt="" height="40px" width="40px"/>
-                        <input className="form-control rounded ms-3"  placeholder="Search" />
-                    </div>
-                </div>
+                <Header/>
             </div>
-
+            <p>Username</p>
+            <p>Password</p>
+            <p>0 post 0 followers 0 following</p>
             <div className="row g-3">
                 {climbs.map((climb, index) => (
                     <div className="col-12 col-md-6 col-lg-4 col-lg-4 mb-2" key={index}>
