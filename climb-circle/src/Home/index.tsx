@@ -67,12 +67,10 @@ export default function Home() {
                 size={'40px'}
                 style={{
                     color: '#A3B1BE',
-                    
                     position: 'fixed',
                     bottom: '50px',  
                     right: '50px',   
                     zIndex: 1,
-                         
                 }}
                 data-bs-toggle="modal"
                 data-bs-target="#create-modal"
