@@ -1,4 +1,44 @@
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost, setPosts } from "../Home/reducer";
+import * as client from "../Home/client";
+import { ObjectId } from 'bson';
+
+
 export default function Create() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [post, setPost] = useState({
+        title: "Title",
+        location: "Location",
+        description: "Description",
+        climbType: "Climb Type",
+        angle: "",
+    });
+
+    const generateId = () => {
+        const id = new ObjectId();
+        return id;
+    }
+
+    const handlePost = async () => {
+        try {
+            const postId = generateId();
+
+            const newPost = await client.createPost({...post, _id: postId,});
+            dispatch(addPost(newPost));
+            
+            navigate(`/Home/*`);
+        } catch (error) {
+            console.error("Error creating post:", error);
+        }
+    };
+
+    const handleCancel = () => {
+        navigate(`/Home/*`);
+    };
+
     return (
         <div id="create-modal" className="modal" data-bs-backdrop="static" data-bs-keyboard="false">
             <div className="modal-dialog modal-dialog-centered" style={{ width: '600px' }}>
@@ -9,16 +49,48 @@ export default function Create() {
                         <img src="../images/icon.png" alt="" height="40px" width="40px" className="mb-3" />
                         <h4 className="mb-3">Username</h4>
                         <button type="button" className="btn btn-primary btn-lg mb-3">Upload Photo</button>
-                        <input placeholder="Title" className="form-control mb-3" />
-                        <input placeholder="Location" className="form-control mb-3 " />
-                        <textarea placeholder="Description" className="form-control mb-3" />
-                        <select className="form-select mb-3" aria-label="Climb Type">
+
+                        <input placeholder="Title" 
+                            className="form-control mb-3" 
+                            onChange={(e) => setPost({...post, title: e.target.value})}
+                        />
+                        <input placeholder="Location" 
+                            className="form-control mb-3" 
+                            onChange={(e) => setPost({...post, location: e.target.value})}
+                        />
+
+                        <textarea placeholder="Description" 
+                            className="form-control mb-3" 
+                            onChange={(e) => setPost({...post, description: e.target.value})}
+                        />
+
+                        <select 
+                            className="form-select mb-3" 
+                            aria-label="Climb Type"
+                            onChange={(e) => setPost({...post, climbType: e.target.value})}
+                        >
                             <option value="" disabled selected>Climb Type</option>
                             <option value="overhang">Overhang</option>
                             <option value="slab">Slab</option>
                             <option value="cave">Cave</option>
                         </select>
                         <input type="number" placeholder="Angle" className="form-control mb-3" />
+                        <div className="d-flex justify-content-end">
+                            <button
+                                onClick={handleCancel}
+                                className="btn btn-secondary me-2"
+                                id="wd-cancel"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handlePost}
+                                className="btn btn-success"
+                                id="wd-save"
+                            >
+                                Post
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

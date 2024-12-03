@@ -5,27 +5,41 @@ import SignUp from '../Login/signup';
 import Header from '../Header';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import Create from '../Create';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Session from '../Login/Session';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { setPosts } from './reducer';
+import * as client from "./client";
 
 export default function Home() {
+    const dispatch = useDispatch();
+
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const posts = useSelector((state: any) => state.postsReducer.posts);
+
     const climbs = [
-        { username: 'username', caption: 'caption', image: '../images/test.png', likes: 5 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/shoe1.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/test.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/shoe.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/test.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/hoodie1.png', likes: 10 }
+        { username: 'username', caption: 'caption', climbType: "Overhang", angle: 20, image: '../images/test.png', likes: 5 },
+        { username: 'user2', caption: 'asdfasdfaf', climbType: "Overhang", angle: 20, image: '../images/shoe1.png', likes: 10 },
+        { username: 'user2', caption: 'asdfasdfaf', climbType: "Overhang", angle: 20, image: '../images/test.png', likes: 10 },
+        { username: 'user2', caption: 'asdfasdfaf', climbType: "Overhang", angle: 20, image: '../images/shoe.png', likes: 10 },
+        { username: 'user2', caption: 'asdfasdfaf', climbType: "Overhang", angle: 20, image: '../images/test.png', likes: 10 },
+        { username: 'user2', caption: 'asdfasdfaf', climbType: "Overhang", image: '../images/hoodie1.png', likes: 10 }
     ];
     const [activeLink, setActiveLink] = useState('following');
 
     const handleLinkClick = (link: string) => {
         setActiveLink(link);
     };
+
+    const fetchPosts = async () => {
+        const data = await client.fetchPosts();
+        dispatch(setPosts(data));
+    }
+    useEffect(() => {
+        fetchPosts();
+    }, []);
 
     return (
         <Session>
@@ -59,7 +73,12 @@ export default function Home() {
             <div className="row g-3">
                 {climbs.map((climb, index) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={index}>
-                        <Card username={climb.username} caption={climb.caption} likes={climb.likes} image={climb.image} />
+                        <Card username={climb.username} caption={climb.caption} climbType={climb.climbType} angle={climb.angle} likes={climb.likes} image={climb.image} />
+                    </div>
+                ))}
+                {posts.map((post: any) => (
+                    <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
+                        <Card username={post.user} caption={post.description} climbType={post.climbType} angle={post.angle} likes={post.likes} image={post.photo} />
                     </div>
                 ))}
             </div>
