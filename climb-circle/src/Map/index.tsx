@@ -28,20 +28,19 @@ export default function Map() {
   const [places, setPlaces] = useState<PlaceDetails[]>([]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    
     setSearch(event.target.value);
   };
 
   const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && search) {
+      console.log("searching")
       fetchPlaces(search);
     }
   };
 
   const fetchPlaces = (query: string) => {
     const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${API_KEY}`;
-  
-    console.log(url); // Log the URL to make sure it's correct
-  
     fetch(url)
       .then(response => response.json())
       .then(data => {
@@ -50,7 +49,7 @@ export default function Map() {
           const placesPromises = data.results.map((place: any) => {
             const placeDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${API_KEY}`;
             console.log(placeDetailsUrl)
-            console.log("HELLO")
+            
             return fetch(placeDetailsUrl)
               .then(response => response.json())
               .then(placeDetails => {
@@ -126,7 +125,7 @@ export default function Map() {
         </div>
 
         <div className="col-8 p-0">
-          {/* <LoadScript googleMapsApiKey={API_KEY} libraries={['places']}>
+          <LoadScript googleMapsApiKey={API_KEY} libraries={['places']}>
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={center}
@@ -136,7 +135,7 @@ export default function Map() {
                 <Marker position={place.location} key={place.name} />
               ))}
             </GoogleMap>
-          </LoadScript> */}
+          </LoadScript>
         </div>
       </div>
     </div>
