@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { addPost, setPosts } from "../Home/reducer";
 import * as client from "../Home/client";
 import { ObjectId } from 'bson';
 
-
 export default function Create() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const modalRef = useRef(null);
     const [post, setPost] = useState({
         title: "Title",
         location: "Location",
@@ -25,11 +25,10 @@ export default function Create() {
     const handlePost = async () => {
         try {
             const postId = generateId();
-
-            const newPost = await client.createPost({...post, _id: postId,});
+            
+            const newPost = await client.createPost({...post, _id: postId});
             dispatch(addPost(newPost));
             
-            navigate(`/Home/*`);
         } catch (error) {
             console.error("Error creating post:", error);
         }
@@ -50,7 +49,7 @@ export default function Create() {
                         <h4 className="mb-3">Username</h4>
                         <button type="button" className="btn btn-primary btn-lg mb-3">Upload Photo</button>
 
-                        <input placeholder="Title" 
+                        <input placeholder="Title"
                             className="form-control mb-3" 
                             onChange={(e) => setPost({...post, title: e.target.value})}
                         />
@@ -70,16 +69,20 @@ export default function Create() {
                             onChange={(e) => setPost({...post, climbType: e.target.value})}
                         >
                             <option value="" disabled selected>Climb Type</option>
-                            <option value="overhang">Overhang</option>
-                            <option value="slab">Slab</option>
-                            <option value="cave">Cave</option>
+                            <option value="Overhang">Overhang</option>
+                            <option value="Slab">Slab</option>
+                            <option value="Cave">Cave</option>
                         </select>
-                        <input type="number" placeholder="Angle" className="form-control mb-3" />
+
+                        <input type="number" placeholder="Angle" className="form-control mb-3" 
+                            onChange={(e) => setPost({...post, angle: e.target.value})}
+                        />
                         <div className="d-flex justify-content-end">
                             <button
                                 onClick={handleCancel}
                                 className="btn btn-secondary me-2"
                                 id="wd-cancel"
+                                data-bs-dismiss="modal"
                             >
                                 Cancel
                             </button>
@@ -87,6 +90,7 @@ export default function Create() {
                                 onClick={handlePost}
                                 className="btn btn-success"
                                 id="wd-save"
+                                data-bs-dismiss="modal"
                             >
                                 Post
                             </button>
