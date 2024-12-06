@@ -18,7 +18,7 @@ export default function SignIn() {
     }
 
     return (
-        <div id="signin-modal" className="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div id="signin-modal" className="modal" data-bs-backdrop="static">
             <div className="modal-dialog modal-dialog-centered" style={{width: '425px'}}>
                 <div className="modal-content">
                     <div className="modal-body d-flex flex-column align-items-center justify-content-center position-relative">

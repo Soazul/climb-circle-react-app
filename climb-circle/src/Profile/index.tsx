@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import * as client from "../Login/client";
 import { setCurrentUser } from "../Login/reducer";
 import { PencilFill } from 'react-bootstrap-icons';
+import PostModal from '../Home/Card/PostModal';
 
 export default function Profile() {
     const [profile, setProfile] = useState<any>({});
@@ -37,13 +38,19 @@ export default function Profile() {
 
     useEffect(() => { fetchProfile(); }, []);
 
+    const [selectedPost, setSelectedPost] = useState<any>(null);
+    
+    const handleCardClick = (post: any) => {
+        setSelectedPost(post);
+    };
+
     const climbs = [
-        { username: 'username', caption: 'caption', image: '../images/test.png', likes: 5 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/shoe1.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/test.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/shoe.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/test.png', likes: 10 },
-        { username: 'user2', caption: 'asdfasdfaf', image: '../images/hoodie1.png', likes: 10 }
+        { username: 'annie', location: "nyc", description: "this is my first climb!", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
+        { username: 'hi', location: "bos", description: "this is my second climb!", climbType: "Overhang", angle: 15, photo: '../images/shoe1.png', likes: 15 },
+        { username: 'hello', location: "la", description: "this is my third climb!", climbType: "Cave", angle: 5, photo: '../images/test.png', likes: 30 },
+        { username: 'chicken', location: "sf", description: "this is my fourth climb!", climbType: "Overhang", angle: 10, photo: '../images/shoe.png', likes: 20 },
+        { username: 'wings', location: "nyc", description: "this is my fifth climb!", climbType: "Slab", angle: 5, photo: '../images/test.png', likes: 5 },
+        { username: 'tenders', location: "la", description: "this is my sixth climb!", climbType: "Overhang", angle: 19, photo: '../images/hoodie1.png', likes: 0 }
     ];
 
     return (
@@ -106,25 +113,15 @@ export default function Profile() {
                 </div>
             </div>
             <div className="row g-3">
-                {climbs.map((climb, index) => (
-                    <div className="col-12 col-md-6 col-lg-4 col-lg-4 mb-2" key={index}>
-                        <Card username={climb.username} caption={climb.caption} likes={climb.likes} image={climb.image} />
+            {climbs.map((post: any) => (
+                    <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
+                        <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
                     </div>
                 ))}
             </div>
-            <BsPlusCircleFill
-                size={'40px'}
-                style={{
-                    color: '#A3B1BE',
-                    position: 'fixed',
-                    bottom: '50px',
-                    right: '50px',
-                    zIndex: 1,
-                }}
-                data-bs-toggle="modal"
-                data-bs-target="#create-modal"
-            />
+            <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
             <Create />
+            {selectedPost && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} />)}
         </div>
     );
 }

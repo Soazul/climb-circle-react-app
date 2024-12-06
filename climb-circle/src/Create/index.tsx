@@ -8,13 +8,13 @@ import { ObjectId } from 'bson';
 export default function Create() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const modalRef = useRef(null);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [post, setPost] = useState({
-        title: "Title",
-        location: "Location",
         description: "Description",
+        location: "Location",
         climbType: "Climb Type",
         angle: "",
+        photo: ""
     });
 
     const generateId = () => {
@@ -25,10 +25,8 @@ export default function Create() {
     const handlePost = async () => {
         try {
             const postId = generateId();
-            
             const newPost = await client.createPost({...post, _id: postId});
             dispatch(addPost(newPost));
-            
         } catch (error) {
             console.error("Error creating post:", error);
         }
@@ -38,31 +36,54 @@ export default function Create() {
         navigate(`/Home/*`);
     };
 
+    const handleFileChange = (e: any) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            console.log("imageUrl", imageUrl);
+            setPost({ ...post, photo: imageUrl });
+        }
+    };
+
+    const handleUploadClick = () => {
+        const fileInput = document.getElementById('file-input');
+        if (fileInput) {
+            fileInput.click();
+        }
+    };
+
     return (
-        <div id="create-modal" className="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div id="create-modal" className="modal" data-bs-backdrop="static">
             <div className="modal-dialog modal-dialog-centered" style={{ width: '600px' }}>
                 <div className="modal-content">
                     <div className="modal-body d-flex flex-column align-items-center justify-content-center position-relative">
                         <button type="button" className="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal"></button>
                         <br />
                         <img src="../images/icon.png" alt="" height="40px" width="40px" className="mb-3" />
-                        <h4 className="mb-3">Username</h4>
-                        <button type="button" className="btn btn-primary btn-lg mb-3">Upload Photo</button>
-
-                        <input placeholder="Title"
-                            className="form-control mb-3" 
-                            onChange={(e) => setPost({...post, title: e.target.value})}
+                        <input
+                            type="file"
+                            id="file-input"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={handleFileChange}
                         />
-                        <input placeholder="Location" 
-                            className="form-control mb-3" 
-                            onChange={(e) => setPost({...post, location: e.target.value})}
-                        />
-
+                        <button
+                            type="button"
+                            className="btn btn-primary mb-3"
+                            onClick={handleUploadClick}
+                        >
+                            Upload Photo
+                        </button>
+                        
                         <textarea placeholder="Description" 
                             className="form-control mb-3" 
                             onChange={(e) => setPost({...post, description: e.target.value})}
                         />
 
+                        <input placeholder="Location" 
+                            className="form-control mb-3" 
+                            onChange={(e) => setPost({...post, location: e.target.value})}
+                        />
                         <select 
                             className="form-select mb-3" 
                             aria-label="Climb Type"

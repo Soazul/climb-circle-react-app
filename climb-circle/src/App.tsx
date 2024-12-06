@@ -32,7 +32,7 @@ function App() {
       <Provider store={store}>
         <div>
           <Routes>
-            <Route path="/" element={<Navigate to="/Home/*" />} />
+            <Route path="/" element={<Navigate to="/Home/" />} />
             <Route path="/Home/*" element={<Home />} />
             <Route path="/Profile/*" element={<Profile />} />
             <Route path="/Map" element={<Map />} />
