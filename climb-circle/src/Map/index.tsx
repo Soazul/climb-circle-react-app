@@ -1,6 +1,8 @@
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, InfoWindowF } from '@react-google-maps/api';
 import Header from '../Header';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import * as client from './client';
 
 const API_KEY = 'AIzaSyCfqkGTA5KQ2NCYiaSHI3b2Kj9aBM5xSDs';
 
@@ -15,87 +17,107 @@ const center = {
 };
 
 interface PlaceDetails {
+  place_id: string;
   name: string;
   address: string;
   location: { lat: number, lng: number };
   rating: string;
-  phone_number?: string; // Optional phone number field
-  opening_hours?: string; // Optional opening hours field
+  phone_number?: string;
+  opening_hours?: string[];
+  photoUrl?: string;
+  website?: string;
 }
 
 export default function Map() {
   const [search, setSearch] = useState<string>('');
   const [places, setPlaces] = useState<PlaceDetails[]>([]);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [activeMarker, setActiveMarker] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    
     setSearch(event.target.value);
   };
 
   const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && search) {
-      console.log("searching")
       fetchPlaces(search);
+      navigate(`/Map?criteria=${search}`);
     }
   };
 
-  const fetchPlaces = (query: string) => {
-    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${API_KEY}`;
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'OK') {
-          // Map over the results array and fetch place details for each place
-          const placesPromises = data.results.map((place: any) => {
-            const placeDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${API_KEY}`;
-            console.log(placeDetailsUrl)
-            
-            return fetch(placeDetailsUrl)
-              .then(response => response.json())
-              .then(placeDetails => {
-                if (placeDetails.status === 'OK') {
-                  const placeData = placeDetails.result;
-                  return {
-                    name: placeData.name,
-                    address: placeData.formatted_address,
-                    location: placeData.geometry.location,
-                    rating: placeData.rating,
-                    phone_number: placeData.formatted_phone_number || 'N/A',
-                    opening_hours: placeData.opening_hours ? placeData.opening_hours.weekday_text.join(', ') : 'N/A',
-                  };
-                } else {
-                  console.error('Error fetching place details:', placeDetails.error_message);
-                  return null;
-                }
-              })
-              .catch(error => {
-                console.error('Error fetching place details:', error);
-                return null;
-              });
-          });
-  
-          // Wait for all promises to resolve and set the places state
-          Promise.all(placesPromises)
-            .then(placesData => {
-              // Filter out null values in case any requests failed
-              setPlaces(placesData.filter((place) => place !== null));
-            });
-        } else {
-          console.error('Error fetching places:', data.error_message);
-        }
-      })
-      .catch(error => console.error('Error fetching places:', error));
+  const fetchPlaces = async (query: string) => {
+    try {
+      const data = await client.fetchPlaces('/api/place/textsearch/json', { query, key: API_KEY });
+      if (data.status === 'OK') {
+        const placesPromises = data.results.map(async (place: any) => {
+          try {
+            const placeDetails = await client.fetchPlaces('/api/place/details/json', { place_id: place.place_id, key: API_KEY });
+            if (placeDetails.status === 'OK') {
+              const placeData = placeDetails.result;
+              const photoReference = placeData.photos && placeData.photos.length > 0 ? placeData.photos[0].photo_reference : null;
+              const photoUrl = photoReference
+                ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=${API_KEY}`
+                : null;
+
+              return {
+                place_id: placeData.place_id,
+                name: placeData.name,
+                address: placeData.formatted_address,
+                location: placeData.geometry.location,
+                rating: placeData.rating,
+                phone_number: placeData.formatted_phone_number || 'N/A',
+                opening_hours: placeData.opening_hours ? placeData.opening_hours.weekday_text : null,
+                photoUrl,
+                website: placeData.website || 'N/A',
+              };
+            } else {
+              console.error('Error fetching place details:', placeDetails.error_message);
+              return null;
+            }
+          } catch (error) {
+            console.error('Error fetching place details:', error);
+            return null;
+          }
+        });
+
+        const placesData = await Promise.all(placesPromises);
+        setPlaces(placesData.filter((place) => place !== null) as PlaceDetails[]);
+      } else {
+        console.error('Error fetching places:', data.error_message);
+      }
+    } catch (error) {
+      console.error('Error fetching places:', error);
+    }
+  };
+
+  const onLoad = useCallback((mapInstance: google.maps.Map) => {
+    setMap(mapInstance);
+  }, []);
+
+  const panTo = (location: { lat: number; lng: number }) => {
+    if (map) {
+      map.panTo(location);
+      map.setZoom(15);
+    }
+  };
+
+  const handleMarkerClick = (placeId: string) => {
+    setActiveMarker(placeId);
+  };
+
+  const handleInfoWindowClose = () => {
+    setActiveMarker(null);
   };
 
   return (
-    <div className="container-fluid" style={{ height: '100vh' }}>
+    <div className="container-fluid vh-100 d-flex flex-column">
       <div className="row mb-4 mt-4 header-container">
         <Header />
       </div>
 
-      <div className="row h-100">
-        {/* Left section: Search bar and Results */}
-        <div className="col-4 d-flex flex-column align-items-start bg-light p-3">
+      <div className="row flex-grow-1 d-flex h-100">
+        <div className="col-4 d-flex flex-column align-items-start bg-light p-3" style={{ overflowY: 'auto', maxHeight: '100vh' }}>
           <input
             type="text"
             value={search}
@@ -105,17 +127,47 @@ export default function Map() {
             placeholder="Search location..."
           />
 
-            
-          {/* Display search results */}
           {places.length > 0 ? (
             places.map((place, index) => (
-              <div key={index} className="search-result">
+              <div
+                key={index}
+                className="search-result"
+                onClick={() => panTo(place.location)}
+                style={{ cursor: 'pointer' }}
+              >
+                {place.photoUrl && <img src={place.photoUrl} alt={place.name} className="img-fluid mb-2" style={{ maxWidth: '100%' }} />}
                 <h5>{place.name}</h5>
                 <p><strong>Address:</strong> {place.address}</p>
-                <p><strong>Location:</strong> {place.location.lat}, {place.location.lng}</p>
                 <p><strong>Rating:</strong> {place.rating}</p>
                 <p><strong>Phone:</strong> {place.phone_number}</p>
-                <p><strong>Opening Hours:</strong> {place.opening_hours}</p>
+                {place.opening_hours ? (
+                  <div>
+                    <strong>Opening Hours:</strong>
+                    <ul>
+                      {place.opening_hours.map((hour, idx) => (
+                        <li key={idx}>{hour}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <p><strong>Opening Hours:</strong> N/A</p>
+                )}
+                <p>
+                  <strong>Website:</strong>{' '}
+                  {place.website !== 'N/A' ? (
+                    <a href={place.website} target="_blank" rel="noopener noreferrer">
+                      Visit Website
+                    </a>
+                  ) : (
+                    'N/A'
+                  )}
+                </p>
+                <p>
+                  <strong>Profile: View Profile</strong>
+                </p>
+                <Link to={`/Map/Details/${place.place_id}`} className="btn btn-primary mt-2">
+                  View Details
+                </Link>
                 <hr />
               </div>
             ))
@@ -124,15 +176,29 @@ export default function Map() {
           )}
         </div>
 
-        <div className="col-8 p-0">
-          <LoadScript googleMapsApiKey={API_KEY} libraries={['places']}>
+        <div className="col-8 d-flex flex-grow-1 p-0" style={{ overflowY: 'auto', maxHeight: '100vh' }}>
+          <LoadScript googleMapsApiKey={API_KEY!} libraries={['places']}>
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={center}
               zoom={12}
+              onLoad={onLoad}
             >
               {places.map((place) => (
-                <Marker position={place.location} key={place.name} />
+                <div key={place.place_id}>
+                  <Marker
+                    position={place.location}
+                    onClick={() => handleMarkerClick(place.place_id)}
+                  />
+                  {activeMarker === place.place_id && (
+                    <InfoWindowF
+                      position={place.location}
+                      onCloseClick={handleInfoWindowClose}
+                    >
+                      <h6>{place.name}</h6>
+                    </InfoWindowF>
+                  )}
+                </div>
               ))}
             </GoogleMap>
           </LoadScript>

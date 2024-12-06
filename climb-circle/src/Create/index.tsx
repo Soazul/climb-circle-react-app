@@ -12,7 +12,7 @@ export default function Create() {
     const [post, setPost] = useState({
         description: "Description",
         location: "Location",
-        climbType: "Climb Type",
+        climbType: "",
         angle: "",
         photo: ""
     });
