@@ -15,7 +15,7 @@ export default function Create() {
         username: currentUser?.username,
         description: "Description",
         location: "Location",
-        climbType: "Climb Type",
+        climbType: "",
         angle: "",
         photo: ""
     });
