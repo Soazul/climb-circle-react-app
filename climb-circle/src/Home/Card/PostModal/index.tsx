@@ -4,7 +4,7 @@ import * as client from "../../client";
 import { setPosts } from '../../reducer';
 import {useDispatch, useSelector} from "react-redux";
 
-export default function PostModal({location, description, climbType, angle, photo, likes, isEditing, _id, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, _id: string, onClose: () => void}) {
+export default function PostModal({username, location, description, climbType, angle, photo, likes, isEditing, _id, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, _id: string, onClose: () => void}) {
     const [descriptionState, setDescriptionState] = useState(description || "");
     const [locationState, setLocationState] = useState(location || "");
     const [climbTypeState, setClimbTypeState] = useState(climbType || "");
@@ -61,9 +61,10 @@ export default function PostModal({location, description, climbType, angle, phot
         <div className="modal fade show" style={{ display: 'block' }} role="dialog">
             <div className="modal-dialog modal-dialog-centered modal-lg">
                 <div className="modal-content">
-                    <div className="modal-header">
-                        <button type="button" className="btn-close" onClick={onClose} aria-label="Close" />
-                    </div>
+                    <div className="modal-header d-flex justify-content-center w-100">
+                    <h4 className="modal-title">{username}</h4>
+                    <button type="button" className="btn-close" onClick={onClose} aria-label="Close" />
+                </div>
                     <div className="modal-body">
                         <div className="d-flex">
                         <div className="me-3" style={{width: '250px', height: '250px', position: 'relative'}}>
