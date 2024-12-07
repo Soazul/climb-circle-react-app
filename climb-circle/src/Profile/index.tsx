@@ -53,7 +53,7 @@ export default function Profile() {
     };
 
     const climbs = [
-        { username: 'annie', location: "nyc", description: "this is my first climb!", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
+        { username: 'annie', location: "nyc", description: "this is my first climb! wefkhefawkjheawfkjhlfdfaskhjfa", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
         { username: 'hi', location: "bos", description: "this is my second climb!", climbType: "Overhang", angle: 15, photo: '../images/shoe1.png', likes: 15 },
         { username: 'hello', location: "la", description: "this is my third climb!", climbType: "Cave", angle: 5, photo: '../images/test.png', likes: 30 },
         { username: 'chicken', location: "sf", description: "this is my fourth climb!", climbType: "Overhang", angle: 10, photo: '../images/shoe.png', likes: 20 },
