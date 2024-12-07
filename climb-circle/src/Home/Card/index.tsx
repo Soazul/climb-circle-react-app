@@ -4,7 +4,7 @@ export default function Card({ username, location, description, climbType, angle
     { username: string, location: string, description: string, climbType?: string, angle?: number, photo: string, likes: number, onClick: () => void }) {
 
     return (
-        <div id="card" className="card rounded-3 m-1" style={{ width: '100%', aspectRatio: '1 / 1' }} data-bs-toggle="modal" data-bs-target="#post-modal" onClick={onClick} >
+        <div id="card" className="card rounded-3 m-1" style={{ width: '100%', aspectRatio: '1 / 1' }} onClick={onClick} >
             <div className="card-body d-flex flex-column justify-content-between p-3">
                 <h5 className="card-title mb-2">{username}</h5>
                 <div style={{ flex: 1, backgroundImage: `url(${photo})`, backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: '10px' }} />

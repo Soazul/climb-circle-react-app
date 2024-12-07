@@ -27,11 +27,17 @@ export default function Home() {
         { username: 'tenders', location: "la", description: "this is my sixth climb!", climbType: "Overhang", angle: 19, photo: '../images/hoodie1.png', likes: 0 }
     ];
     const [activeLink, setActiveLink] = useState('following');
-
-    const [selectedPost, setSelectedPost] = useState<any>(null);
+    const [selectedPost, setSelectedPost] = useState<any>(null); 
+    const [isModalOpen, setIsModalOpen] = useState(false); 
 
     const handleCardClick = (post: any) => {
         setSelectedPost(post);
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        setSelectedPost(null); 
     };
 
     const handleLinkClick = (link: string) => {
@@ -49,6 +55,17 @@ export default function Home() {
     return (
         <Session>
         <div id="home" className="py-4" style={{ padding: '15px' }}>
+        {isModalOpen && (
+                    <div className="backdrop-overlay" style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        zIndex: 1000,
+                    }}></div>
+                )}
             <div className="row mb-4">
                 <Header />
                 <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
@@ -92,8 +109,7 @@ export default function Home() {
                 <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
                     <Create/>
                 </div>)}
-            {selectedPost && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={false} />)}
-
+            {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={false} onClose={handleModalClose} />)}
         </div>
         </Session>
     );

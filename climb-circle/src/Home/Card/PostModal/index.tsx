@@ -1,7 +1,7 @@
 import { FaHeart } from 'react-icons/fa';
 import {useState} from "react";
 
-export default function PostModal({location, description, climbType, angle, photo, likes, isEditing }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean }) {
+export default function PostModal({location, description, climbType, angle, photo, likes, isEditing, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, onClose: () => void}) {
     
     const [descriptionState, setDescriptionState] = useState(description || "");
     const [locationState, setLocationState] = useState(location || "");
@@ -10,12 +10,13 @@ export default function PostModal({location, description, climbType, angle, phot
     console.log(location, description, climbType, angle, photo, likes);
 
     return (
-        <div id="post-modal" className="modal fade" data-bs-backdrop="static" >
+        <div className="modal fade show" style={{ display: 'block' }} role="dialog">
             <div className="modal-dialog modal-dialog-centered modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
-
+                    {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/> */}
+                    <button type="button" className="btn-close" onClick={onClose} aria-label="Close" />
+                    
                     </div>
                     <div className="modal-body">
                         <div className="d-flex">

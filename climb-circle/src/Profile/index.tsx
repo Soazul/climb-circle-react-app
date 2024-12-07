@@ -44,13 +44,20 @@ export default function Profile() {
         dispatch(setPosts(data));
     }
 
-    useEffect(() => { fetchProfile(); fetchPosts();}, []);
+    const [selectedPost, setSelectedPost] = useState<any>(null); 
+    const [isModalOpen, setIsModalOpen] = useState(false); 
 
-    const [selectedPost, setSelectedPost] = useState<any>(null);
-    
     const handleCardClick = (post: any) => {
         setSelectedPost(post);
+        setIsModalOpen(true);
     };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        setSelectedPost(null); 
+    };
+
+    useEffect(() => { fetchProfile(); fetchPosts();}, []);
 
     const climbs = [
         { username: 'annie', location: "nyc", description: "this is my first climb! wefkhefawkjheawfkjhlfdfaskhjfa", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
@@ -63,6 +70,17 @@ export default function Profile() {
 
     return (
         <div id="profile" className="py-4" style={{ padding: '15px' }}>
+                    {isModalOpen && (
+                    <div className="backdrop-overlay" style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        zIndex: 1000,
+                    }}></div>
+                )}
             <div className="row mb-4">
                 <Header />
                 <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
@@ -134,7 +152,7 @@ export default function Profile() {
             </div>
             <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
             <Create />
-            {selectedPost && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={true}/>)}
+          {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={true} onClose={handleModalClose} />)}
         </div>
     );
 }
