@@ -78,6 +78,7 @@ export default function UserProfile() {
                     photo={selectedPost.photo}
                     likes={selectedPost.likes}
                     isEditing={false}
+                    _id={selectedPost._id}
                     onClose={handleModalClose}
                 />
             )}
