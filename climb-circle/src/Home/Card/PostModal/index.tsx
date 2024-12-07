@@ -14,9 +14,7 @@ export default function PostModal({location, description, climbType, angle, phot
             <div className="modal-dialog modal-dialog-centered modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">
-                    {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/> */}
                     <button type="button" className="btn-close" onClick={onClose} aria-label="Close" />
-                    
                     </div>
                     <div className="modal-body">
                         <div className="d-flex">

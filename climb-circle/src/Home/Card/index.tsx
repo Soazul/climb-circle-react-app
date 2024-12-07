@@ -13,7 +13,6 @@ export default function Card({ username, location, description, climbType, angle
                         {description.substring(0, 40)}
                         {description.length > 40 ? '...' : ''}
                     </p>
-                    {/* {username && <p className="card-text mb-0" style={{ fontSize: '18px' }}>{username}</p>} */}
                     <div className="d-flex align-items-center">
                         <FaHeart className="me-2 text-danger" />
                         <span>{likes}</span>

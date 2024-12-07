@@ -69,18 +69,8 @@ export default function Profile() {
     ];
 
     return (
-        <div id="profile" className="py-4" style={{ padding: '15px' }}>
-                    {isModalOpen && (
-                    <div className="backdrop-overlay" style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        zIndex: 1000,
-                    }}></div>
-                )}
+            <div id="profile" className="py-4" style={{ padding: '15px' }}>
+            {isModalOpen && (<div className="backdrop-overlay" style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1}}></div>)}
             <div className="row mb-4">
                 <Header />
                 <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
@@ -132,7 +122,7 @@ export default function Profile() {
                         <PencilFill
                             size="20px"
                             style={{ cursor: "pointer", marginLeft: "10px" }}
-                            onClick={() => setIsEditingPassword(!isEditingPassword)} // Toggle password editing mode
+                            onClick={() => setIsEditingPassword(!isEditingPassword)}
                         />
                     </div>
                     <p className="text-center">0 post 0 followers 0 following</p>
