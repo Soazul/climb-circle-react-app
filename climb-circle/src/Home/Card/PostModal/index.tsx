@@ -1,14 +1,62 @@
 import { FaHeart } from 'react-icons/fa';
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import * as client from "../../client";
+import { setPosts } from '../../reducer';
+import {useDispatch, useSelector} from "react-redux";
 
-export default function PostModal({location, description, climbType, angle, photo, likes, isEditing, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, onClose: () => void}) {
-    
+export default function PostModal({location, description, climbType, angle, photo, likes, isEditing, _id, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, _id: string, onClose: () => void}) {
     const [descriptionState, setDescriptionState] = useState(description || "");
     const [locationState, setLocationState] = useState(location || "");
     const [climbTypeState, setClimbTypeState] = useState(climbType || "");
     const [angleState, setAngleState] = useState(angle || 0);
-    console.log(location, description, climbType, angle, photo, likes);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
+    const dispatch = useDispatch();
+    const fetchPosts = async () => {
+        const data = await client.fetchPosts();
+        dispatch(setPosts(data));
+        console.log("data", data)
+    }
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
+    const deletePost = async (postId: string) => {
+        try {
+            await client.deletePost(postId); 
+            const updatedPosts = await client.fetchPosts();
+            dispatch(setPosts(updatedPosts)); 
+            onClose(); 
+        } catch (error) {
+            console.log(error); 
+        }
+    };
+
+    const savePost = async (post: any) => {
+        try {
+            await client.updatePost(_id, post); 
+            const updatedPosts = await client.fetchPosts();
+            dispatch(setPosts(updatedPosts));
+        } catch (error) {
+            console.log(error);
+        }
+     };
+     
+
+    const save = () => {
+        const newPost = {
+            description: descriptionState,
+            location: locationState,
+            climbType: climbTypeState,
+            angle: angleState,
+            photo,
+            likes,
+            username: currentUser.username
+        };
+        savePost({ ...newPost, _id: _id })
+        onClose(); 
+      };
+    
     return (
         <div className="modal fade show" style={{ display: 'block' }} role="dialog">
             <div className="modal-dialog modal-dialog-centered modal-lg">
@@ -57,8 +105,8 @@ export default function PostModal({location, description, climbType, angle, phot
                     </div>
                     {isEditing && (
                         <div className="modal-footer">
-                            <button className='btn btn-success'>Save</button>
-                            <button className='btn btn-danger'>Delete</button>
+                            <button className='btn btn-success' onClick={save}>Save</button>
+                            <button className='btn btn-danger' onClick={() => deletePost(`${_id}`)}>Delete</button>
                         </div>
                     )}
                 </div>

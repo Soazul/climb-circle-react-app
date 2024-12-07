@@ -17,7 +17,7 @@ export default function Home() {
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const posts = useSelector((state: any) => state.postsReducer.posts);
-    console.log(posts);
+
     const climbs = [
         { username: 'annie', location: "nyc", description: "this is my first climb!asdffasfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
         { username: 'hi', location: "bos", description: "this is my second climb!", climbType: "Overhang", angle: 15, photo: '../images/shoe1.png', likes: 15 },
@@ -28,6 +28,7 @@ export default function Home() {
     ];
     const [activeLink, setActiveLink] = useState('following');
     const [selectedPost, setSelectedPost] = useState<any>(null); 
+    // console.log("homeselectedPost", selectedPost);
     const [isModalOpen, setIsModalOpen] = useState(false); 
 
     const handleCardClick = (post: any) => {
@@ -99,7 +100,7 @@ export default function Home() {
                 <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
                     <Create/>
                 </div>)}
-            {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={false} onClose={handleModalClose} />)}
+            {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={false} _id={selectedPost._id} onClose={handleModalClose} />)}
         </div>
         </Session>
     );

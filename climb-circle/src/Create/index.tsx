@@ -10,7 +10,7 @@ export default function Create() {
     const dispatch = useDispatch();
     const { cid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    console.log(currentUser.username)
+
     const [post, setPost] = useState({
         username: currentUser?.username,
         description: "Description",

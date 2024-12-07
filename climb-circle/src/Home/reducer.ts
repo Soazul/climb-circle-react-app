@@ -13,7 +13,6 @@ const postsSlice = createSlice({
     },
     addPost: (state, { payload: post }) => {
       const newPost = {
-        // _id: new Date().getTime().toString(),
         username: post.username,
         description: post.description,
         location: post.location,
@@ -31,15 +30,10 @@ const postsSlice = createSlice({
       state.posts = state.posts.map((a: any) =>
         a._id === post._id ? post : a
       ) as any;
-    },
-    editPost: (state, { payload: postId }) => {
-      state.posts = state.posts.map((a: any) =>
-        a._id === postId ? { ...a, editing: true } : a
-      ) as any;
-    },
+    }
   },
 });
 
-export const { setPosts, addPost, deletePost, updatePost, editPost } = postsSlice.actions;
+export const { setPosts, addPost, deletePost, updatePost } = postsSlice.actions;
 
 export default postsSlice.reducer;

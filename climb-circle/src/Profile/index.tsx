@@ -45,6 +45,7 @@ export default function Profile() {
     }
 
     const [selectedPost, setSelectedPost] = useState<any>(null); 
+    console.log("profileselectedPost", selectedPost);
     const [isModalOpen, setIsModalOpen] = useState(false); 
 
     const handleCardClick = (post: any) => {
@@ -142,7 +143,7 @@ export default function Profile() {
             </div>
             <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
             <Create />
-          {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={true} onClose={handleModalClose} />)}
+          {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={true} _id={selectedPost._id} onClose={handleModalClose} />)}
         </div>
     );
 }
