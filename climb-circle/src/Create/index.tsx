@@ -8,8 +8,11 @@ import { ObjectId } from 'bson';
 export default function Create() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { cid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+    console.log(currentUser.username)
     const [post, setPost] = useState({
+        username: currentUser?.username,
         description: "Description",
         location: "Location",
         climbType: "Climb Type",
@@ -24,8 +27,8 @@ export default function Create() {
 
     const handlePost = async () => {
         try {
-            const postId = generateId();
-            const newPost = await client.createPost({...post, _id: postId});
+            const postId = generateId()
+            const newPost = await client.createPost({...post, _id: postId });
             dispatch(addPost(newPost));
         } catch (error) {
             console.error("Error creating post:", error);

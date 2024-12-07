@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import Card from './Card';
 import SignIn from '../Login/signin';
 import SignUp from '../Login/signup';
@@ -18,7 +17,7 @@ export default function Home() {
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const posts = useSelector((state: any) => state.postsReducer.posts);
-
+    console.log(posts);
     const climbs = [
         { username: 'annie', location: "nyc", description: "this is my first climb!", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
         { username: 'hi', location: "bos", description: "this is my second climb!", climbType: "Overhang", angle: 15, photo: '../images/shoe1.png', likes: 15 },
@@ -82,18 +81,19 @@ export default function Home() {
                         <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
                     </div>
                 ))}
-                {/* {posts.map((post: any) => (
+                {posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
-                        <Card username={post.user} title={post.title}  climbType={post.climbType} angle={post.angle} likes={post.likes} photo={post.photo} />
+                        <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
                     </div>
-                ))} */}
+                ))}
             </div>
             {currentUser && (
                 <div>
                 <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
                     <Create/>
                 </div>)}
-            {selectedPost && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} />)}
+            {selectedPost && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={false} />)}
+
         </div>
         </Session>
     );

@@ -5,10 +5,12 @@ import Create from '../Create';
 import { useDispatch, useSelector } from "react-redux";
 import {useNavigate} from "react-router-dom";
 import { useEffect, useState } from "react";
-import * as client from "../Login/client";
+import * as usersClient from "../Login/client";
 import { setCurrentUser } from "../Login/reducer";
 import { PencilFill } from 'react-bootstrap-icons';
 import PostModal from '../Home/Card/PostModal';
+import { setPosts } from '../Home/reducer';
+import * as postClient from "../Home/client";
 
 export default function Profile() {
     const [profile, setProfile] = useState<any>({});
@@ -17,9 +19,10 @@ export default function Profile() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const {posts} = useSelector((state: any) => state.postsReducer);
 
     const updateProfile = async () => {
-        const updatedProfile = await client.updateUser(profile);
+        const updatedProfile = await usersClient.updateUser(profile);
         dispatch(setCurrentUser(updatedProfile));
         setIsEditingUsername(false);
         setIsEditingPassword(false);
@@ -31,12 +34,17 @@ export default function Profile() {
     };
 
     const signout = async () => {
-        await client.signout();
+        await usersClient.signout();
         dispatch(setCurrentUser(null));
         navigate("/Home");
     };
 
-    useEffect(() => { fetchProfile(); }, []);
+    const fetchPosts = async () => {
+        const data = await postClient.fetchPosts();
+        dispatch(setPosts(data));
+    }
+
+    useEffect(() => { fetchProfile(); fetchPosts();}, []);
 
     const [selectedPost, setSelectedPost] = useState<any>(null);
     
@@ -113,7 +121,12 @@ export default function Profile() {
                 </div>
             </div>
             <div className="row g-3">
-            {climbs.map((post: any) => (
+                {climbs.map((post: any) => (
+                    <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
+                        <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
+                    </div>
+                ))}
+                {posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
                         <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
                     </div>
@@ -121,7 +134,7 @@ export default function Profile() {
             </div>
             <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
             <Create />
-            {selectedPost && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} />)}
+            {selectedPost && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={true}/>)}
         </div>
     );
 }

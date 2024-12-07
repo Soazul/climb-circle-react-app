@@ -1,15 +1,21 @@
 import { FaHeart } from 'react-icons/fa';
+import {useState} from "react";
 
-export default function PostModal({ username, location, description, angle, photo, likes }: { username: string | null, location: string | null, description: string | null, angle: number | null, photo: string | null, likes: number | null }) {
+export default function PostModal({location, description, climbType, angle, photo, likes, isEditing }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean }) {
+    
+    const [descriptionState, setDescriptionState] = useState(description || "");
+    const [locationState, setLocationState] = useState(location || "");
+    const [climbTypeState, setClimbTypeState] = useState(climbType || "");
+    const [angleState, setAngleState] = useState(angle || 0);
+    console.log(location, description, climbType, angle, photo, likes);
+
     return (
-        <div id="post-modal" className="modal fade" data-bs-backdrop="static">
+        <div id="post-modal" className="modal fade" data-bs-backdrop="static" >
             <div className="modal-dialog modal-dialog-centered modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <div className="w-100 text-center">
-                            <h5><strong>{username}</strong></h5>
-                        </div>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+
                     </div>
                     <div className="modal-body">
                         <div className="d-flex">
@@ -24,19 +30,19 @@ export default function PostModal({ username, location, description, angle, phot
                                 <div className="row mb-2">
                                     <div className="col-12">
                                         <label htmlFor="description" className="form-label">Description</label>
-                                        <textarea className="form-control" id="description" rows={2} value={description || ''}></textarea>
+                                        <textarea className="form-control" id="description" rows={2} value={descriptionState} onChange={(e) => setDescriptionState(e.target.value)} disabled={!isEditing}></textarea>
                                     </div>
                                 </div>
                                 <div className="row mb-2">
                                     <div className="col-12">
                                         <label htmlFor="location" className="form-label">Location</label>
-                                        <input type="text" className="form-control" id="location" value={location || ''}/>
+                                        <input type="text" className="form-control" id="location" value={locationState} onChange={(e) => setLocationState(e.target.value)} disabled={!isEditing}/>
                                     </div>
                                 </div>
                                 <div className="row mb-2">
                                     <div className="col-6">
-                                        <label htmlFor="climbType" className="form-label">Climb Type</label>
-                                        <select className="form-select" id="climbType">
+                                        <label htmlFor="climbType" className="form-label" >Climb Type</label>
+                                        <select className="form-select" id="climbType" value={climbTypeState} onChange={(e) => setClimbTypeState(e.target.value)} disabled={!isEditing}>
                                             <option value="Slab">Slab</option>
                                             <option value="Overhang">Overhang</option>
                                             <option value="Cave">Cave</option>
@@ -44,12 +50,18 @@ export default function PostModal({ username, location, description, angle, phot
                                     </div>
                                     <div className="col-6">
                                         <label htmlFor="angle" className="form-label">Angle</label>
-                                        <input type="number" className="form-control" id="angle" defaultValue={angle || ''}/>
+                                        <input type="number" className="form-control" id="angle" value={angleState} onChange={(e) => setAngleState(Number(e.target.value))} disabled={!isEditing}/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {isEditing && (
+                        <div className="modal-footer">
+                            <button className='btn btn-success'>Save</button>
+                            <button className='btn btn-danger'>Delete</button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
