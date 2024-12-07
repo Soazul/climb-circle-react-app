@@ -5,6 +5,7 @@ import Home from './Home';
 import Profile from './Profile';
 import Map from './Map';
 import Details from './Details';
+import UserProfile from './Profile/UserProfile';
 import { Provider } from "react-redux";
 import store from '../src/store'; 
 // import 'bootstrap/dist/css/bootstrap.min.css';
@@ -36,6 +37,7 @@ function App() {
             <Route path="/" element={<Navigate to="/Home/" />} />
             <Route path="/Home/*" element={<Home />} />
             <Route path="/Profile/*" element={<Profile />} />
+            <Route path="/Profile/User/:userId" element={<UserProfile />} />
             <Route path="/Map" element={<Map />} />
             <Route path="/Map/details/:placeId" element={<Details />} />
           </Routes>

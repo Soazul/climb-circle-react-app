@@ -40,7 +40,8 @@ export default function Profile() {
     };
 
     const fetchPosts = async () => {
-        const data = await postClient.fetchPosts();
+        if (!currentUser) return navigate("/Home");
+        const data = await postClient.findPostsByUserId(currentUser._id);
         dispatch(setPosts(data));
     }
 
