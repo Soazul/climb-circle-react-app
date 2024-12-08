@@ -56,6 +56,15 @@ export default function Home() {
             <div id="home" className="py-4" style={{ padding: '15px' }}>
             {isModalOpen && (<div className="backdrop-overlay" style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1}}></div>)}
             <div className="row mb-4">
+            <div className="d-flex align-items-center">
+                <p className="ms-2 me-2">Ryan Huang 01 and Annie Zhang 02</p>
+                <a href="https://github.com/Soazul/climb-circle-react-app" className="me-2">
+                    <button className='btn btn-primary mb-3'>React GitHub</button>
+                </a>
+                <a href="https://github.com/Soazul/climb-circle-node-server-app">
+                    <button className='btn btn-primary mb-3'>Node GitHub</button>
+                </a>
+            </div>
                 <Header />
                 <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
                     {currentUser ? (
