@@ -9,18 +9,22 @@ export default function Create() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-
+    const isMember = currentUser.role === "Member";
     const initialPostState = {
         username: currentUser?.username,
         description: "",
         location: "",
+        eventDate: "", 
+        cost: "", 
         climbType: "",
         angle: "",
         photo: "",
-        fileName: "", 
+        fileName: "",
+        postType: "Climb" 
     };
-    const [post, setPost] = useState(initialPostState);
 
+    const [post, setPost] = useState(initialPostState);
+    console.log(post)
     const generateId = () => new ObjectId();
 
     const handlePost = async () => {
@@ -76,7 +80,7 @@ export default function Create() {
             aria-labelledby="create-modal-label"
             aria-hidden="true"
         >
-            <div className="modal-dialog modal-dialog-centered" >
+            <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="create-modal-label">Create Post</h5>
@@ -107,62 +111,206 @@ export default function Create() {
                             <p className="text-center mb-2">Selected File: {post.fileName}</p>
                         )}
 
-                        <div className="mb-3">
-                            <textarea
-                                placeholder="Description"
-                                className="form-control"
-                                value={post.description}
-                                onChange={(e) => setPost({ ...post, description: e.target.value })}
-                            />
-                        </div>
+                        {isMember ? (
+                            <>
+                                <div className="mb-3">
+                                    <textarea
+                                        placeholder="Description"
+                                        className="form-control"
+                                        value={post.description}
+                                        onChange={(e) => setPost({ ...post, description: e.target.value })}
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        placeholder="Location"
+                                        className="form-control"
+                                        value={post.location}
+                                        onChange={(e) => setPost({ ...post, location: e.target.value })}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 mb-3">
+                                        <select
+                                            className="form-select"
+                                            aria-label="Climb Type"
+                                            value={post.climbType}
+                                            onChange={(e) => setPost({ ...post, climbType: e.target.value })}
+                                        >
+                                            <option value="" disabled>
+                                                Climb Type
+                                            </option>
+                                            <option value="Overhang">Overhang</option>
+                                            <option value="Slab">Slab</option>
+                                            <option value="Cave">Cave</option>
+                                        </select>
+                                    </div>
+                                    <div className="col-md-6 mb-3">
+                                        <input
+                                            type="number"
+                                            placeholder="Angle"
+                                            className="form-control"
+                                            value={post.angle}
+                                            onChange={(e) => setPost({ ...post, angle: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                           
+                            <>
+                                <div className="d-flex justify-content-end w-50 mb-3">
+                                    <select
+                                        className="form-select"
+                                        aria-label="Post Type"
+                                        value={post.postType}
+                                        onChange={(e) => setPost({ ...post, postType: e.target.value })}
+                                    >
+                                        <option value="" disabled>
+                                            Post Type
+                                        </option>
+                                        <option defaultValue="Climb">Climb</option>
+                                        <option value="Event">Event</option>
+                                        <option value="Sponsorship">Sponsorship</option>
+                                        <option value="Merch">Merch</option>
+                                    </select>
+                                </div>
 
-                        <div className="mb-3">
-                            <input
-                                placeholder="Location"
-                                className="form-control"
-                                value={post.location}
-                                onChange={(e) => setPost({ ...post, location: e.target.value })}
-                            />
-                        </div>
+                                {post.postType === "Climb" && (
+                                    <>
+                                        <div className="mb-3">
+                                            <textarea
+                                                placeholder="Description"
+                                                className="form-control"
+                                                value={post.description}
+                                                onChange={(e) => setPost({ ...post, description: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <input
+                                                placeholder="Location"
+                                                className="form-control"
+                                                value={post.location}
+                                                onChange={(e) => setPost({ ...post, location: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-md-6 mb-3">
+                                                <select
+                                                    className="form-select"
+                                                    aria-label="Climb Type"
+                                                    value={post.climbType}
+                                                    onChange={(e) => setPost({ ...post, climbType: e.target.value })}
+                                                >
+                                                    <option value="" disabled>
+                                                        Climb Type
+                                                    </option>
+                                                    <option value="Overhang">Overhang</option>
+                                                    <option value="Slab">Slab</option>
+                                                    <option value="Cave">Cave</option>
+                                                </select>
+                                            </div>
+                                            <div className="col-md-6 mb-3">
+                                                <input
+                                                    type="number"
+                                                    placeholder="Angle"
+                                                    className="form-control"
+                                                    value={post.angle}
+                                                    onChange={(e) => setPost({ ...post, angle: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </>
+                        )}
 
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <select
-                                    className="form-select"
-                                    aria-label="Climb Type"
-                                    value={post.climbType}
-                                    onChange={(e) => setPost({ ...post, climbType: e.target.value })}
-                                >
-                                    <option value="" disabled>
-                                        Climb Type
-                                    </option>
-                                    <option value="Overhang">Overhang</option>
-                                    <option value="Slab">Slab</option>
-                                    <option value="Cave">Cave</option>
-                                </select>
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <input
-                                    type="number"
-                                    placeholder="Angle"
+                        {post.postType === "Event" && (
+                                <>
+                                <div className="mb-3">
+                                <textarea
+                                    placeholder="Description"
                                     className="form-control"
-                                    value={post.angle}
-                                    onChange={(e) => setPost({ ...post, angle: e.target.value })}
+                                    value={post.description}
+                                    onChange={(e) => setPost({ ...post, description: e.target.value })}
                                 />
                             </div>
-                        </div>
-
-                        <div className="d-flex justify-content-end">
-                            <button onClick={handleCancel} className="btn btn-secondary me-2" id="wd-cancel" data-bs-dismiss="modal">Cancel</button>
-                            <button
-                                onClick={handlePost}
-                                className="btn btn-success"
-                                id="wd-save"
-                                data-bs-dismiss="modal"
-                            >
-                                Post
-                            </button>
-                        </div>
+                                <div className="row mb-3">
+                                    <div className="col-md-6">
+                                        <input
+                                            placeholder="Location"
+                                            className="form-control"
+                                            value={post.location}
+                                            onChange={(e) => setPost({ ...post, location: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <input
+                                            type="date"
+                                            placeholder="Event Date"
+                                            className="form-control"
+                                            value={post.eventDate}
+                                            onChange={(e) => setPost({ ...post, eventDate: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                </>
+                            )}
+        
+                            {post.postType === "Sponsorship" && (
+                                <div className="mb-3">
+                                    <textarea
+                                        placeholder="Description"
+                                        className="form-control"
+                                        value={post.description}
+                                        onChange={(e) => setPost({ ...post, description: e.target.value })}
+                                    />
+                                </div>
+                            )}
+        
+                            {post.postType === "Merch" && (
+                                <>
+                                    <div className="row mb-3">
+                                        <div className="col-md-6">
+                                            <input
+                                                type="number"
+                                                placeholder="Cost"
+                                                className="form-control"
+                                                value={post.cost}
+                                                onChange={(e) => setPost({ ...post, cost: e.target.value })}
+                                            />
+                                        </div>
+                                        
+                                    </div>
+                                    <div className="mb-3">
+                                        <textarea
+                                            placeholder="Description"
+                                            className="form-control"
+                                            value={post.description}
+                                            onChange={(e) => setPost({ ...post, description: e.target.value })}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                            
+                    </div>
+                    <div className="modal-footer">
+                        <button
+                            onClick={handleCancel}
+                            className="btn btn-secondary"
+                            id="wd-cancel"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handlePost}
+                            className="btn btn-success"
+                            id="wd-save"
+                            data-bs-dismiss="modal"
+                        >
+                            Post
+                        </button>
                     </div>
                 </div>
             </div>

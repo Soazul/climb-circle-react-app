@@ -98,7 +98,7 @@ export default function Home() {
                 <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
                     <Create/>
                 </div>)}
-            {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={false} _id={selectedPost._id} onClose={handleModalClose} />)}
+            {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={false} _id={selectedPost._id} cost={selectedPost.cost} eventDate={selectedPost.eventDate} onClose={handleModalClose} />)}
         </div>
         </Session>
     );

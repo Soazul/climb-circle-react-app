@@ -4,18 +4,20 @@ import * as client from "../../client";
 import { setPosts } from '../../reducer';
 import {useDispatch, useSelector} from "react-redux";
 
-export default function PostModal({username, location, description, climbType, angle, photo, likes, isEditing, _id, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, _id: string, onClose: () => void}) {
+export default function PostModal({username, location, description, climbType, angle, photo, likes, isEditing, _id, cost, eventDate, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, _id: string, cost: number | null, eventDate: string | null,  onClose: () => void}) {
     const [descriptionState, setDescriptionState] = useState(description || "");
     const [locationState, setLocationState] = useState(location || "");
     const [climbTypeState, setClimbTypeState] = useState(climbType || "");
     const [angleState, setAngleState] = useState(angle || 0);
+    const [costState, setCostState] = useState(cost || 0);
+    const [eventDateState, setEventDateState] = useState(eventDate || "");
+
     const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     const dispatch = useDispatch();
     const fetchPosts = async () => {
         const data = await client.fetchPosts();
         dispatch(setPosts(data));
-        console.log("data", data)
     }
     useEffect(() => {
         fetchPosts();
@@ -49,10 +51,13 @@ export default function PostModal({username, location, description, climbType, a
             location: locationState,
             climbType: climbTypeState,
             angle: angleState,
+            cost: costState,
+            eventDate: eventDateState,
             photo,
             likes,
             username: currentUser.username
         };
+        console.log(newPost)
         savePost({ ...newPost, _id: _id })
         onClose(); 
       };
@@ -81,12 +86,15 @@ export default function PostModal({username, location, description, climbType, a
                                         <textarea className="form-control" id="description" rows={2} value={descriptionState} onChange={(e) => setDescriptionState(e.target.value)} disabled={!isEditing}></textarea>
                                     </div>
                                 </div>
-                                <div className="row mb-2">
+                                {location != null && location !== "" &&(
+                                    <div className="row mb-2">
                                     <div className="col-12">
                                         <label htmlFor="location" className="form-label">Location</label>
                                         <input type="text" className="form-control" id="location" value={locationState} onChange={(e) => setLocationState(e.target.value)} disabled={!isEditing}/>
                                     </div>
                                 </div>
+                                )}
+                                
                                 {climbType && angle !== null ? (
                                     <div className="row mb-2">
                                         <div className="col-6">
@@ -99,7 +107,7 @@ export default function PostModal({username, location, description, climbType, a
                                         </div>
                                         <div className="col-6">
                                             <label htmlFor="angle" className="form-label">Angle</label>
-                                            <input type="number"  className="form-control" id="angle" value={angleState} onChange={(e) => setAngleState(Number(e.target.value))} disabled={!isEditing}/>
+                                            <input type="number"  className="form-control" id="angle" value={angleState?.toString()} onChange={(e) => setAngleState(Number(e.target.value))} disabled={!isEditing}/>
                                         </div>
                                     </div>
                                 ) : (
@@ -116,19 +124,49 @@ export default function PostModal({username, location, description, climbType, a
                                                 </div>
                                             </div>
                                         )}
-                                        {angle !== null && (
+                                        {angle != null && angle !== 0 &&(
                                             <div className="row mb-2">
                                                 <div className="col-6">
                                                     <label htmlFor="angle" className="form-label">Angle</label>
-                                                    <input type="number" className="form-control" id="angle" value={angleState} onChange={(e) => setAngleState(Number(e.target.value))} disabled={!isEditing}/>
+                                                    <input type="number" className="form-control" id="angle" value={angleState?.toString()} onChange={(e) => setAngleState(Number(e.target.value))} disabled={!isEditing}/>
                                                 </div>
                                             </div>
                                         )}
                                     </>
                                 )}
+
+                    {cost && cost != null &&(
+                        <div className="row mb-2">
+                            <div className="col-6">
+                                <label htmlFor="cost" className="form-label">Cost</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    id="cost"
+                                    value={costState?.toString()}
+                                    onChange={(e) => setCostState(Number(e.target.value))}
+                                    disabled={!isEditing}
+                                />
                             </div>
                         </div>
-                    </div>
+                    )}
+
+                    {eventDate && eventDate != null &&(
+                        <div className="row mb-2">
+                            <div className="col-6">
+                                <label htmlFor="eventDate" className="form-label">Event Date</label>
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    id="eventDate"
+                                    value={eventDateState ? new Date(eventDateState).toISOString().split('T')[0] : ''}
+                                    onChange={(e) => setEventDateState(e.target.value)}
+                                    disabled={!isEditing}
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     {isEditing && (
                         <div className="modal-footer">
                             <button className="btn btn-success" onClick={save}>Save</button>
@@ -137,6 +175,9 @@ export default function PostModal({username, location, description, climbType, a
                     )}
                 </div>
             </div>
+        </div>
+        </div>
+        </div>
         </div>
     );
 }    
