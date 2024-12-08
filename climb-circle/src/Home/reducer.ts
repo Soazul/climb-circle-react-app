@@ -17,7 +17,10 @@ const postsSlice = createSlice({
         description: post.description,
         location: post.location,
         climbType: post.climbType,
-        angle: post.angle
+        angle: post.angle,
+        photo: post.photo,
+        cost: post.cost,
+        eventDate: post.eventDate
       };
       state.posts = [...state.posts, newPost] as any;
     },

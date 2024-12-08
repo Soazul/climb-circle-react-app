@@ -11,7 +11,6 @@ export default function PostModal({username, location, description, climbType, a
     const [angleState, setAngleState] = useState(angle || 0);
     const [costState, setCostState] = useState(cost || 0);
     const [eventDateState, setEventDateState] = useState(eventDate || "");
-
     const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     const dispatch = useDispatch();

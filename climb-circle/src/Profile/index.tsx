@@ -46,7 +46,6 @@ export default function Profile() {
     }
 
     const [selectedPost, setSelectedPost] = useState<any>(null); 
-    console.log("profileselectedPost", selectedPost);
     const [isModalOpen, setIsModalOpen] = useState(false); 
 
     const handleCardClick = (post: any) => {
