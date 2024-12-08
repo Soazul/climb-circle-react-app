@@ -12,6 +12,7 @@ export default function Create() {
     const isMember = currentUser.role === "Member";
     const initialPostState = {
         username: currentUser?.username,
+        user: currentUser?._id,
         description: "",
         location: "",
         eventDate: "", 

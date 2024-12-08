@@ -4,7 +4,7 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 // const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 // const POSTS_API = `http://localhost:4000/api/posts`;
 // //${REMOTE_SERVER}/api/posts
-const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
+const REMOTE_SERVER = 'http://localhost:4000';
 const USERS_API = `${REMOTE_SERVER}/api/users`;
 const POSTS_API = `${REMOTE_SERVER}/api/posts`;
 
