@@ -25,7 +25,6 @@ export default function Create() {
     };
 
     const [post, setPost] = useState(initialPostState);
-    console.log(post)
     const generateId = () => new ObjectId();
 
     const handlePost = async () => {
@@ -35,7 +34,7 @@ export default function Create() {
             dispatch(addPost(newPost));
             setPost(initialPostState);
         } catch (error) {
-            console.error("Error creating post:", error);
+            console.log(error);
         }
     };
 

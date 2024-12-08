@@ -56,7 +56,6 @@ export default function PostModal({username, location, description, climbType, a
             likes,
             username: currentUser.username
         };
-        console.log(newPost)
         savePost({ ...newPost, _id: _id })
         onClose(); 
       };
