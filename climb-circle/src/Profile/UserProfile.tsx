@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import * as usersClient from "../Login/client";
 import * as postClient from "../Home/client";
 import PostModal from '../Home/Card/PostModal';
+import * as profileClient from "./client";
 
 export default function UserProfile() {
     const { userId } = useParams();
@@ -12,6 +13,7 @@ export default function UserProfile() {
     const [posts, setPosts] = useState<any[]>([]);
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     const fetchUserProfile = async (userId?: any) => {
         const userProfile = await usersClient.findUserById(userId);
@@ -21,6 +23,20 @@ export default function UserProfile() {
     const fetchUserPosts = async (userId?: any) => {
         const userPosts = await postClient.findPostsByUserId(userId);
         setPosts(userPosts);
+    };
+
+    const fetchFollowStatus = async () => {
+        const followingStatus = await profileClient.isFollowing(userId);
+        setIsFollowing(followingStatus);
+    };
+
+    const toggleFollow = async () => {
+        if (isFollowing) {
+            await profileClient.unfollowUser(userId);
+        } else {
+            await profileClient.followUser(userId);
+        }
+        setIsFollowing(!isFollowing);
     };
 
     const handleCardClick = (post: any) => {
@@ -36,6 +52,7 @@ export default function UserProfile() {
     useEffect(() => {
         fetchUserProfile(userId);
         fetchUserPosts(userId);
+        fetchFollowStatus();
     }, [userId]);
 
     return (
@@ -46,6 +63,12 @@ export default function UserProfile() {
                 <div className="col-12 col-md-6 mb-3">
                     <div className="d-flex justify-content-center align-items-center mb-2">
                         <span style={{ fontSize: '20px' }}>{profile.username}</span>
+                        <button 
+                            className={`btn ${isFollowing ? 'btn-outline-danger' : 'btn-outline-primary'}`}
+                            onClick={toggleFollow}
+                        >
+                            {isFollowing ? 'Unfollow' : 'Follow'}
+                        </button>
                     </div>
                     <p className="text-center">
                         {profile.postsCount || 0} posts {profile.followersCount || 0} followers {profile.followingCount || 0} following
