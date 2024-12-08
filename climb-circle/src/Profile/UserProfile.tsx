@@ -2,11 +2,11 @@ import Card from '../Home/Card';
 import Header from '../Header';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import * as usersClient from "../Login/client";
 import * as postClient from "../Home/client";
 import PostModal from '../Home/Card/PostModal';
 import * as profileClient from "./client";
-import {useSelector } from "react-redux";
 
 export default function UserProfile() {
     const { userId } = useParams();
@@ -19,6 +19,7 @@ export default function UserProfile() {
     console.log("currentUserUserProfile", currentUser);
     const fetchUserProfile = async (userId?: any) => {
         const userProfile = await usersClient.findUserById(userId);
+        console.log(userProfile.followers.length);
         setProfile(userProfile);
     };
 
@@ -28,15 +29,15 @@ export default function UserProfile() {
     };
 
     const fetchFollowStatus = async () => {
-        const followingStatus = await profileClient.isFollowing(userId);
+        const followingStatus = await profileClient.isFollowing(userId, currentUser._id);
         setIsFollowing(followingStatus);
     };
 
     const toggleFollow = async () => {
         if (isFollowing) {
-            await profileClient.unfollowUser(userId);
+            await profileClient.unfollowUser(userId, currentUser._id);
         } else {
-            await profileClient.followUser(userId);
+            await profileClient.followUser(userId, currentUser._id);
         }
         setIsFollowing(!isFollowing);
     };
@@ -58,14 +59,16 @@ export default function UserProfile() {
     }, [userId]);
 
     return (
-        <div id="user-profile" className="py-4" style={{ padding: '15px' }}>
+        <div id="user-profile" className="container-fluid vh-100 d-flex flex-column">
             {isModalOpen && (<div className="backdrop-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1 }}></div>)}
-            <Header />
+            <div className="row mb-4 mt-4 header-container">
+                <Header />
+            </div>
             <div className="d-flex justify-content-center">
                 <div className="col-12 col-md-6 mb-3">
-                    <div className="d-flex justify-content-center align-items-center mb-2">
-                        <span style={{ fontSize: '20px' }}>{profile.username}</span>
-                        <button 
+                    <div className="d-flex justify-content-center align-items-center">
+                        <span style={{ fontSize: '20px', marginRight: '10px' }}>{profile.username}</span>
+                        <button
                             className={`btn ${isFollowing ? 'btn-outline-danger' : 'btn-outline-primary'}`}
                             onClick={toggleFollow}
                         >

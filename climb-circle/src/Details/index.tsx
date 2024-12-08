@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../Header';
 
-const API_KEY = 'AIzaSyCfqkGTA5KQ2NCYiaSHI3b2Kj9aBM5xSDs';
+const API_KEY = process.env.API_KEY;
 
 export default function Details() {
     const { placeId } = useParams<{ placeId: string }>();
