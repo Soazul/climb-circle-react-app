@@ -102,6 +102,7 @@ export default function UserProfile() {
                     likes={selectedPost.likes}
                     isEditing={false}
                     _id={selectedPost._id}
+                    cost={selectedPost.cost} eventDate={selectedPost.eventDate}
                     onClose={handleModalClose}
                 />
             )}
