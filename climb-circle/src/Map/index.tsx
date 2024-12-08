@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import * as client from './client';
 
-const API_KEY = 'AIzaSyCfqkGTA5KQ2NCYiaSHI3b2Kj9aBM5xSDs';
+const API_KEY = process.env.API_KEY;
 
 const containerStyle = {
   width: '100%',

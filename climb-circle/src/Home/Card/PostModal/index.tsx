@@ -15,7 +15,7 @@ export default function PostModal({username, location, description, climbType, a
 
     const dispatch = useDispatch();
     const fetchPosts = async () => {
-        const data = await client.fetchPosts();
+        const data = await client.findPostsByUserId(currentUser._id);
         dispatch(setPosts(data));
     }
     useEffect(() => {

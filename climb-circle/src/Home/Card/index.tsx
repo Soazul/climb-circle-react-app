@@ -1,7 +1,20 @@
-import { FaHeart } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 export default function Card({ username, location, description, climbType, angle, likes, photo, onClick }:
     { username: string, location: string, description: string, climbType?: string, angle?: number, photo: string, likes: number, onClick: () => void }) {
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(likes);
+
+    const handleLikeClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (liked) {
+            setLikeCount((prev) => prev - 1);
+        } else {
+            setLikeCount((prev) => prev + 1);
+        }
+        setLiked(!liked);
+    };
 
     return (
         <div id="card" className="card rounded-3 m-1" style={{ width: '100%', aspectRatio: '1 / 1' }} onClick={onClick} >
@@ -14,8 +27,12 @@ export default function Card({ username, location, description, climbType, angle
                         {description.length > 40 ? '...' : ''}
                     </p>
                     <div className="d-flex align-items-center">
-                        <FaHeart className="me-2 text-danger" />
-                        <span>{likes}</span>
+                        {liked ? (
+                            <FaHeart className="me-2 text-danger" onClick={handleLikeClick} style={{ cursor: 'pointer' }} />
+                        ) : (
+                            <FaRegHeart className="me-2 text-secondary" onClick={handleLikeClick} style={{ cursor: 'pointer' }} />
+                        )}
+                        <span>{likeCount}</span>
                     </div>
                 </div>
             </div>
