@@ -3,7 +3,8 @@ import Header from '../Header';
 import { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import * as client from './client';
-
+import { useSelector } from "react-redux";
+import { FaUserCircle } from 'react-icons/fa';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 const containerStyle = {
@@ -34,6 +35,7 @@ export default function Map() {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -114,6 +116,13 @@ export default function Map() {
     <div className="container-fluid vh-100 d-flex flex-column">
       <div className="row mb-4 mt-4 header-container">
         <Header />
+        <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
+                    
+                        <Link to={`/Profile/${currentUser.username}`} className="d-flex align-items-center">
+                            <FaUserCircle size="30px" />
+                        </Link>
+
+            </div>
       </div>
 
       <div className="row flex-grow-1 d-flex h-100">

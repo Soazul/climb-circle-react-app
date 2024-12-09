@@ -7,6 +7,8 @@ import * as usersClient from "../Login/client";
 import * as postClient from "../Home/client";
 import PostModal from '../Home/Card/PostModal';
 import * as profileClient from "./client";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../Login/reducer";
 
 export default function UserProfile() {
     const { userId } = useParams();
@@ -15,11 +17,12 @@ export default function UserProfile() {
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
-    console.log("currentUserUserProfile", currentUser);
+    const dispatch = useDispatch();
+
     const fetchUserProfile = async (userId?: any) => {
         const userProfile = await usersClient.findUserById(userId);
         console.log(userProfile.followers.length);
+        
         setProfile(userProfile);
     };
 

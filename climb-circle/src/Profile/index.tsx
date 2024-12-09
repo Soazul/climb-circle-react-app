@@ -142,20 +142,10 @@ export default function Profile() {
             </div>
             {currentUser && (
                 <div className="d-flex mb-4 ms-2">
-                    <span
-                        className={`me-3 ${activeTab === 'posts' ? 'text-primary' : 'text-muted'}`}
-                        style={{ cursor: 'pointer', fontWeight: activeTab === 'posts' ? 'bold' : 'normal' }}
-                        onClick={() => setActiveTab('posts')}>
-                        Your Posts
-                    </span>
-                    <span
-                        className={`${activeTab === 'liked' ? 'text-primary' : 'text-muted'}`}
-                        style={{ cursor: 'pointer', fontWeight: activeTab === 'liked' ? 'bold' : 'normal' }}
-                        onClick={() => setActiveTab('liked')}>
-                        Liked Posts
-                    </span>
-                </div>)
-            }
+                    <Link to="#" className="me-3" style={{ textDecoration: 'none', color: activeTab === 'posts' ? '#0023D3' : '#A3B1BE'}} onClick={() => setActiveTab('posts')}>Your Posts</Link>
+                    <Link to="#" style={{textDecoration: 'none', color: activeTab === 'liked' ? '#0023D3' : '#A3B1BE'}} onClick={() => setActiveTab('liked')}>Liked Posts</Link>
+                </div>
+            )}
             <div className="row g-3">
                 {activeTab === 'posts' && posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
