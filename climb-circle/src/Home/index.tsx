@@ -91,14 +91,14 @@ export default function Home() {
                 <Link to="#" style={{textDecoration: 'none', color: activeLink === 'explore' ? '#0023D3' : '#A3B1BE'}} onClick={() => handleLinkClick('explore')}>Explore</Link>
             </div>)}
             <div className="row g-3">
-                {climbs.map((post: any) => (
+                {/* {climbs.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
                         <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
                     </div>
-                ))}
+                ))} */}
                 {posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
-                        <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
+                        <Card postId={post._id} username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
                     </div>
                 ))}
             </div>

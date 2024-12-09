@@ -4,7 +4,8 @@ import * as client from "../../client";
 import { setPosts } from '../../reducer';
 import {useDispatch, useSelector} from "react-redux";
 
-export default function PostModal({username, location, description, climbType, angle, photo, likes, isEditing, _id, cost, eventDate, onClose }: { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: number | null, isEditing: boolean, _id: string, cost: number | null, eventDate: string | null,  onClose: () => void}) {
+export default function PostModal({username, location, description, climbType, angle, photo, likes, isEditing, _id, cost, eventDate, onClose }: 
+    { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: Array<any> | null, isEditing: boolean, _id: string, cost: number | null, eventDate: string | null,  onClose: () => void}) {
     const [descriptionState, setDescriptionState] = useState(description || "");
     const [locationState, setLocationState] = useState(location || "");
     const [climbTypeState, setClimbTypeState] = useState(climbType || "");
@@ -74,7 +75,7 @@ export default function PostModal({username, location, description, climbType, a
                                 {photo && ( <img src={photo} alt="" className="img-fluid" style={{width: '100%', height: '100%', objectFit: 'cover'}}/>)}
                                 <div className="d-flex align-items-center" style={{position: 'absolute', bottom: '10px', left: '10px', backgroundColor: 'rgba(0, 0, 0, 0.4)', color: 'white', padding: '5px 10px', borderRadius: '5px', fontSize: '16px'}}>
                                     <FaHeart color="red" className="me-1" />
-                                    <span>{likes !== null ? likes : 0}</span>
+                                    <span>{likes !== null ? likes.length : 0}</span>
                                 </div>
                             </div>                   
                             <div className="flex-grow-1">

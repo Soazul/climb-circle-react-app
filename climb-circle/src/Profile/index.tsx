@@ -3,7 +3,7 @@ import Header from '../Header';
 import { BsPlusCircleFill } from 'react-icons/bs';
 import Create from '../Create';
 import { useDispatch, useSelector } from "react-redux";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as usersClient from "../Login/client";
 import { setCurrentUser } from "../Login/reducer";
@@ -14,12 +14,14 @@ import * as postClient from "../Home/client";
 
 export default function Profile() {
     const [profile, setProfile] = useState<any>({});
-    const [isEditingUsername, setIsEditingUsername] = useState<boolean>(false); 
-    const [isEditingPassword, setIsEditingPassword] = useState<boolean>(false); 
+    const [activeTab, setActiveTab] = useState<'posts' | 'liked'>('posts');
+    const [likedPosts, setLikedPosts] = useState<any[]>([]);
+    const [isEditingUsername, setIsEditingUsername] = useState<boolean>(false);
+    const [isEditingPassword, setIsEditingPassword] = useState<boolean>(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const {posts} = useSelector((state: any) => state.postsReducer);
+    const { posts } = useSelector((state: any) => state.postsReducer);
 
     const updateProfile = async () => {
         const updatedProfile = await usersClient.updateUser(profile);
@@ -45,8 +47,13 @@ export default function Profile() {
         dispatch(setPosts(data));
     }
 
-    const [selectedPost, setSelectedPost] = useState<any>(null); 
-    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const fetchLikedPosts = async () => {
+        const data = await postClient.findLikedPostsByUserId(currentUser._id);
+        setLikedPosts(data);
+    };
+
+    const [selectedPost, setSelectedPost] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCardClick = (post: any) => {
         setSelectedPost(post);
@@ -55,10 +62,14 @@ export default function Profile() {
 
     const handleModalClose = () => {
         setIsModalOpen(false);
-        setSelectedPost(null); 
+        setSelectedPost(null);
     };
 
-    useEffect(() => { fetchProfile(); fetchPosts();}, []);
+    useEffect(() => {
+        fetchProfile();
+        fetchPosts();
+        fetchLikedPosts();
+    }, []);
 
     const climbs = [
         { username: 'annie', location: "nyc", description: "this is my first climb! wefkhefawkjheawfkjhlfdfaskhjfa", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
@@ -70,13 +81,13 @@ export default function Profile() {
     ];
 
     return (
-            <div id="profile" className="py-4" style={{ padding: '15px' }}>
-            {isModalOpen && (<div className="backdrop-overlay" style={{position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1}}></div>)}
+        <div id="profile" className="py-4" style={{ padding: '15px' }}>
+            {isModalOpen && (<div className="backdrop-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1 }}></div>)}
             <div className="row mb-4">
                 <Header />
                 <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
-                <button onClick={signout} className="btn btn-danger mb-2" id="wd-signout-btn">Sign out</button>
-            </div>
+                    <button onClick={signout} className="btn btn-danger mb-2" id="wd-signout-btn">Sign out</button>
+                </div>
             </div>
             <div className="d-flex justify-content-center">
                 <div className="col-12 col-md-6 mb-3">
@@ -100,7 +111,7 @@ export default function Profile() {
                         <PencilFill
                             size="20px"
                             style={{ cursor: "pointer", marginLeft: '10px' }}
-                            onClick={() => setIsEditingUsername(!isEditingUsername)} 
+                            onClick={() => setIsEditingUsername(!isEditingUsername)}
                         />
                     </div>
                     <div className="d-flex justify-content-center align-items-center mb-2">
@@ -129,21 +140,37 @@ export default function Profile() {
                     <p className="text-center">0 post 0 followers 0 following</p>
                 </div>
             </div>
+            {currentUser && (
+                <div className="d-flex mb-4 ms-2">
+                    <span
+                        className={`me-3 ${activeTab === 'posts' ? 'text-primary' : 'text-muted'}`}
+                        style={{ cursor: 'pointer', fontWeight: activeTab === 'posts' ? 'bold' : 'normal' }}
+                        onClick={() => setActiveTab('posts')}>
+                        Your Posts
+                    </span>
+                    <span
+                        className={`${activeTab === 'liked' ? 'text-primary' : 'text-muted'}`}
+                        style={{ cursor: 'pointer', fontWeight: activeTab === 'liked' ? 'bold' : 'normal' }}
+                        onClick={() => setActiveTab('liked')}>
+                        Liked Posts
+                    </span>
+                </div>)
+            }
             <div className="row g-3">
-                {climbs.map((post: any) => (
+                {activeTab === 'posts' && posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
-                        <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
+                        <Card postId={post._id} username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)} />
                     </div>
                 ))}
-                {posts.map((post: any) => (
+                {activeTab === 'liked' && likedPosts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
-                        <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
+                        <Card postId={post._id} username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)} />
                     </div>
                 ))}
             </div>
-            <BsPlusCircleFill size={'40px'} style={{color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1}} data-bs-toggle="modal" data-bs-target="#create-modal"/>
+            <BsPlusCircleFill size={'40px'} style={{ color: '#A3B1BE', position: 'fixed', bottom: '50px', right: '50px', zIndex: 1 }} data-bs-toggle="modal" data-bs-target="#create-modal" />
             <Create />
-          {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType= {selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={true} _id={selectedPost._id} cost={selectedPost.cost} eventDate={selectedPost.eventDate} onClose={handleModalClose} />)}
+            {selectedPost && isModalOpen && (<PostModal username={selectedPost.username} location={selectedPost.location} description={selectedPost.description} climbType={selectedPost.climbType} angle={selectedPost.angle} photo={selectedPost.photo} likes={selectedPost.likes} isEditing={true} _id={selectedPost._id} cost={selectedPost.cost} eventDate={selectedPost.eventDate} onClose={handleModalClose} />)}
         </div>
     );
 }

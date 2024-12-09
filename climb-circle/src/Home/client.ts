@@ -26,6 +26,11 @@ export const updatePost = async (postId: string, post: any) => {
 };
 
 export const findPostsByUserId = async (userId: string) => {
-    const response = await axios.get(`${USERS_API}/${userId}/posts`);
+    const response = await axiosWithCredentials.get(`${POSTS_API}/${userId}/posts`);
     return response.data;
 };
+
+export const findLikedPostsByUserId = async (userId: string) => {
+    const response = await axiosWithCredentials.get(`${POSTS_API}/${userId}/posts/liked`);
+    return response.data;
+}

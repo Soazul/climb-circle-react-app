@@ -1,19 +1,38 @@
 import { useState } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import * as likesClient from "./likesClient"
 
-export default function Card({ username, location, description, climbType, angle, likes, photo, onClick }:
-    { username: string, location: string, description: string, climbType?: string, angle?: number, photo: string, likes: number, onClick: () => void }) {
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(likes);
+export default function Card({ postId, username, location, description, climbType, angle, likes, photo, onClick }:
+    { postId: any, username: string, location: string, description: string, climbType?: string, angle?: number, photo: string, likes: Array<any>, onClick: () => void }) {
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const [liked, setLiked] = useState(() => likes.includes(currentUser?._id));
+    const [likeCount, setLikeCount] = useState(likes.length);
 
-    const handleLikeClick = (e: React.MouseEvent) => {
+    const handleLikeClick = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (liked) {
-            setLikeCount((prev) => prev - 1);
-        } else {
-            setLikeCount((prev) => prev + 1);
+
+        if (!currentUser) {
+            // Trigger the sign-in modal using data attributes
+            const signInButton = document.querySelector<HTMLButtonElement>('[data-bs-target="#signin-modal"]');
+            if (signInButton) {
+                signInButton.click(); // Simulate a click on the Sign In button to open the modal
+            }
+            return;
         }
-        setLiked(!liked);
+
+        try {
+            if (liked) {
+                await likesClient.unlikePost(postId, currentUser._id);
+                setLikeCount((prev) => prev - 1);
+            } else {
+                await likesClient.likePost(postId, currentUser._id);
+                setLikeCount((prev) => prev + 1);
+            }
+            setLiked(!liked);
+        } catch (error) {
+            console.error("Error liking/unliking post:", error);
+        }
     };
 
     return (

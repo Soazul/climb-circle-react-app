@@ -29,15 +29,15 @@ export default function UserProfile() {
     };
 
     const fetchFollowStatus = async () => {
-        const followingStatus = await profileClient.isFollowing(userId, currentUser._id);
+        const followingStatus = await profileClient.isFollowing(userId);
         setIsFollowing(followingStatus);
     };
 
     const toggleFollow = async () => {
         if (isFollowing) {
-            await profileClient.unfollowUser(userId, currentUser._id);
+            await profileClient.unfollowUser(userId);
         } else {
-            await profileClient.followUser(userId, currentUser._id);
+            await profileClient.followUser(userId);
         }
         setIsFollowing(!isFollowing);
     };
@@ -84,6 +84,7 @@ export default function UserProfile() {
                 {posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
                         <Card
+                            postId={post._id}
                             username={post.username}
                             location={post.location}
                             description={post.description}
