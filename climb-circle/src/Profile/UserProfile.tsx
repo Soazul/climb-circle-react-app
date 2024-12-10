@@ -20,8 +20,8 @@ export default function UserProfile() {
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
-    const [currentUser, setCurrentUser] = useState<User|null>(null);
-    
+    const [currentUser, setCurrentUser] = useState<any | null>(null);
+
     const fetchUser = async () => {
         const user = await loginClient.fetchCurrentUser();
         setCurrentUser(user);
@@ -77,7 +77,7 @@ export default function UserProfile() {
                 <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
                     {currentUser && (
                         <Link to={`/Profile/${currentUser.username}`} className="d-flex align-items-center">
-                                <FaUserCircle size="30px" />
+                            <FaUserCircle size="30px" />
                         </Link>
                     )}
                 </div>
@@ -96,6 +96,13 @@ export default function UserProfile() {
                     <p className="text-center">
                         {profile.postsCount || 0} posts {profile.followersCount || 0} followers {profile.followingCount || 0} following
                     </p>
+                    {profile.placeId && (
+                        <div className="text-center">
+                            <Link to={`/Map/details/${profile.placeId}`} className="btn btn-link">
+                                View Details
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="row g-3">

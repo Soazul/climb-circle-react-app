@@ -18,10 +18,11 @@ interface User {
 };
 
 export default function Profile() {
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [currentUser, setCurrentUser] = useState<any | null>(null);
     const [profile, setProfile] = useState<any>({});
-    const [activeTab, setActiveTab] = useState<'posts' | 'liked'>('posts');
+    const [activeTab, setActiveTab] = useState<'posts' | 'liked' | 'favoriteGyms'>('posts');
     const [likedPosts, setLikedPosts] = useState<any[]>([]);
+    const [favoriteGyms, setFavoriteGyms] = useState<any[]>([]);
     const [isEditingUsername, setIsEditingUsername] = useState<boolean>(false);
     const [isEditingPassword, setIsEditingPassword] = useState<boolean>(false);
     const dispatch = useDispatch();
@@ -41,7 +42,7 @@ export default function Profile() {
             setCurrentUser(user);
             setProfile(user);
         } catch {
-            navigate("/Home"); 
+            navigate("/Home");
         }
     };
 
@@ -60,7 +61,17 @@ export default function Profile() {
     const fetchLikedPosts = async () => {
         if (currentUser) {
             const data = await postClient.findLikedPostsByUserId(currentUser._id);
+            console.log(currentUser.likedPosts);
             setLikedPosts(data);
+        }
+    };
+
+    const fetchFavoritegyms = async () => {
+        if (currentUser) {
+            const gyms = await Promise.all(
+                currentUser.favoriteGyms.map((gymId: any) => loginClient.findUserById(gymId))
+            );
+            setFavoriteGyms(gyms);
         }
     };
 
@@ -85,6 +96,7 @@ export default function Profile() {
         if (currentUser) {
             fetchPosts();
             fetchLikedPosts();
+            fetchFavoritegyms();
         }
     }, [currentUser]);
 
@@ -149,29 +161,31 @@ export default function Profile() {
                 </div>
             </div>
             {currentUser && (
-    <div className="d-flex mb-4 ms-2">
-        <Link 
-            to="#" 
-            className="me-3" 
-            style={{ textDecoration: 'none', color: activeTab === 'posts' ? '#0023D3' : '#A3B1BE' }} 
-            onClick={() => {
-                setActiveTab('posts'); 
-                // window.location.reload();
-            }}
-        >
-            Your Posts
-        </Link>
-        <Link 
-            to="#" 
-            style={{ textDecoration: 'none', color: activeTab === 'liked' ? '#0023D3' : '#A3B1BE' }} 
-            onClick={() => {setActiveTab('liked');
-                // window.location.reload();
-            }}
-        >
-            Liked Posts
-        </Link>
-    </div>
-)}
+                <div className="d-flex mb-4 ms-2">
+                    <Link
+                        to="#"
+                        className={`mx-3 text-decoration-none ${activeTab === 'posts' ? 'text-primary' : 'text-secondary'}`}
+                        onClick={() => setActiveTab('posts')}
+                    >
+                        Your Posts
+                    </Link>
+                    <Link
+                        to="#"
+                        className={`mx-3 text-decoration-none ${activeTab === 'liked' ? 'text-primary' : 'text-secondary'}`}
+                        onClick={() => setActiveTab('liked')}
+                    >
+                        Liked Posts
+                    </Link>
+                    <Link
+                        to="#"
+                        className={`mx-3 text-decoration-none ${activeTab === 'favoriteGyms' ? 'text-primary' : 'text-secondary'}`}
+                        onClick={() => setActiveTab('favoriteGyms')}
+                    >
+                        Favorite Gyms
+                    </Link>
+                </div>
+
+            )}
             <div className="row g-3">
                 {activeTab === 'posts' && posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
@@ -181,6 +195,15 @@ export default function Profile() {
                 {activeTab === 'liked' && likedPosts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
                         <Card postId={post._id} username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)} />
+                    </div>
+                ))}
+                {activeTab === 'favoriteGyms' && favoriteGyms.map((gym: any) => (
+                    <div className="col-12 col-md-6 col-lg-4 mb-2" key={gym._id}>
+                        <Link to={`/profile/User/${gym._id}`} className="text-decoration-none">
+                            <div className="card p-3">
+                                <h5>{gym.username}</h5>
+                            </div>
+                        </Link>
                     </div>
                 ))}
             </div>

@@ -116,13 +116,14 @@ export default function Map() {
     <div className="container-fluid vh-100 d-flex flex-column">
       <div className="row mb-4 mt-4 header-container">
         <Header />
+        {currentUser && (
         <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
-                    
-                        <Link to={`/Profile/${currentUser.username}`} className="d-flex align-items-center">
-                            <FaUserCircle size="30px" />
-                        </Link>
+          
+          <Link to={`/Profile/${currentUser.username}`} className="d-flex align-items-center">
+            <FaUserCircle size="30px" />
+          </Link>
 
-            </div>
+        </div>)}
       </div>
 
       <div className="row flex-grow-1 d-flex h-100">

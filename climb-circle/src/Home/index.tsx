@@ -21,7 +21,8 @@ interface User {
 
 export default function Home() {
     const dispatch = useDispatch();    
-    const [currentUser, setCurrentUser] = useState<User|null>(null);
+    const [currentUser, setCurrentUser] = useState<any|null>(null);
+    const [explorePost, setExplorePosts] = useState<any[]>([]);
     const fetchUser = async () => {
         const user = await loginClient.fetchCurrentUser();
         setCurrentUser(user);

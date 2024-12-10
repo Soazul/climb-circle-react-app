@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../Header';
 import * as client from "./client";
+import * as loginClient from "../Login/client";
+
+import { BsPlus, BsDash } from "react-icons/bs";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -10,6 +13,9 @@ export default function Details() {
     const [place, setPlace] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [gymProfile, setProfile] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<any | null>(null);
+    const [favorited, setFavorited] = useState(false);
+    const [registered, setRegistered] = useState(false);
 
     const fetchGymProfile = async () => {
         try {
@@ -20,7 +26,14 @@ export default function Details() {
         }
     };
 
+    const fetchCurrentUser = async () => {
+        const user = await loginClient.fetchCurrentUser();
+        setCurrentUser(user);
+    };
+
     useEffect(() => {
+        fetchCurrentUser();
+        fetchGymProfile();
         if (placeId) {
             const fetchPlaceDetails = async () => {
                 try {
@@ -40,8 +53,19 @@ export default function Details() {
 
             fetchPlaceDetails();
         }
-        fetchGymProfile();
     }, [placeId]);
+
+    useEffect(() => {
+        if (gymProfile && currentUser) {
+            setFavorited(currentUser.favoriteGyms.includes(gymProfile._id));
+        }
+    }, [gymProfile, currentUser]);
+
+    useEffect(() => {
+        if (currentUser && currentUser.role === "Gym Owner") {
+            setRegistered(currentUser.placeId === placeId);
+        }
+    }, [currentUser, placeId]);
 
     if (error) {
         return <div className="container mt-4">Error: {error}</div>;
@@ -51,8 +75,34 @@ export default function Details() {
         return <div className="container mt-4">Loading...</div>;
     }
 
+    const handleFavoriteClick = async () => {
+        try {
+            if (favorited) {
+                await client.unfavoriteGym(gymProfile._id);
+            } else {
+                await client.favoriteGym(gymProfile._id);
+            }
+            setFavorited(!favorited);
+        } catch (error) {
+            console.error("Error favoriting/unfavoriting post:", error);
+        }
+    };
+
+    const handleRegisterClick = async () => {
+        try {
+            if (registered) {
+                await client.unregisterGym(placeId);
+            } else {
+                await client.registerGym(placeId);
+            }
+            setRegistered(!registered);
+        } catch (error) {
+            console.error("Error registering/unregistering location:", error);
+        }
+    };
+
     return (
-        <div className="mt-4 ms-2" >
+        <div className="mt-4 ms-2">
             <div className="row mb-4 mt-4 header-container">
                 <Header />
             </div>
@@ -68,7 +118,31 @@ export default function Details() {
                         </div>
                     )}
                     <div className="col-md-6">
-                        <h1 className="mb-3">{place.name}</h1>
+                        <div className="mb-3">
+                            <h1 className="mb-2">{place.name}</h1>
+                            {currentUser && (
+                                currentUser.role === "Gym Owner" ? (
+                                    <button
+                                        onClick={handleRegisterClick}
+                                        className={`btn btn-outline-primary d-flex align-items-center`}
+                                        style={{ gap: "0.5rem" }}
+                                    >
+                                        {registered ? <BsDash /> : <BsPlus />}
+                                        {registered ? "Unregister Location" : "Register Location"}
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleFavoriteClick}
+                                        className="btn btn-outline-primary d-flex align-items-center"
+                                        style={{ gap: "0.5rem" }}
+                                    >
+                                        {favorited ? <BsDash /> : <BsPlus />}
+                                        {favorited ? "Remove from favorites" : "Add to favorites"}
+                                    </button>
+                                )
+                            )}
+                        </div>
+
                         {gymProfile && (
                             <div className="mb-3">
                                 <strong>View Climb Circle Profile:</strong>{' '}

@@ -8,3 +8,23 @@ export const findGymByPlaceId = async (placeId: any) => {
     const response = await axiosWithCredentials.get(`${GYM_PROFILE_API}/${placeId}`);
     return response.data;
 };
+
+export const favoriteGym = async (gymUserId: any) => {
+    const response = await axiosWithCredentials.post(`${GYM_PROFILE_API}/favorite/${gymUserId}`);
+    return response.data;
+}
+
+export const unfavoriteGym = async (gymUserId: any) => {
+    const response = await axiosWithCredentials.post(`${GYM_PROFILE_API}/unfavorite/${gymUserId}`);
+    return response.data;
+}
+
+export const registerGym = async (placeId: any) => {
+    const response = await axiosWithCredentials.post(`${GYM_PROFILE_API}/register/${placeId}`);
+    return response.data;
+}
+
+export const unregisterGym = async (placeId: any) => {
+    const response = await axiosWithCredentials.post(`${GYM_PROFILE_API}/unregister/${placeId}`);
+    return response.data;
+}
