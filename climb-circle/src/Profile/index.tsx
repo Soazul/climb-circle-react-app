@@ -11,8 +11,15 @@ import { PencilFill } from 'react-bootstrap-icons';
 import PostModal from '../Home/Card/PostModal';
 import { setPosts } from '../Home/reducer';
 import * as postClient from "../Home/client";
+import * as loginClient from "../Login/client";
+
+interface User {
+    _id: string;
+    username: string;
+};
 
 export default function Profile() {
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [profile, setProfile] = useState<any>({});
     const [activeTab, setActiveTab] = useState<'posts' | 'liked'>('posts');
     const [likedPosts, setLikedPosts] = useState<any[]>([]);
@@ -20,36 +27,42 @@ export default function Profile() {
     const [isEditingPassword, setIsEditingPassword] = useState<boolean>(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { posts } = useSelector((state: any) => state.postsReducer);
 
     const updateProfile = async () => {
         const updatedProfile = await usersClient.updateUser(profile);
-        dispatch(setCurrentUser(updatedProfile));
+        setCurrentUser(updatedProfile);
         setIsEditingUsername(false);
         setIsEditingPassword(false);
     };
 
-    const fetchProfile = () => {
-        if (!currentUser) return navigate("/Home");
-        setProfile(currentUser);
+    const fetchProfile = async () => {
+        try {
+            const user = await loginClient.fetchCurrentUser();
+            setCurrentUser(user);
+            setProfile(user);
+        } catch {
+            navigate("/Home"); // Redirect if fetching user fails
+        }
     };
 
     const signout = async () => {
         await usersClient.signout();
-        dispatch(setCurrentUser(null));
+        setCurrentUser(null);
         navigate("/Home");
     };
 
     const fetchPosts = async () => {
-        if (!currentUser) return navigate("/Home/*");
+        if (!currentUser) return;
         const data = await postClient.findPostsByUserId(currentUser._id);
         dispatch(setPosts(data));
-    }
+    };
 
     const fetchLikedPosts = async () => {
-        const data = await postClient.findLikedPostsByUserId(currentUser._id);
-        setLikedPosts(data);
+        if (currentUser) {
+            const data = await postClient.findLikedPostsByUserId(currentUser._id);
+            setLikedPosts(data);
+        }
     };
 
     const [selectedPost, setSelectedPost] = useState<any>(null);
@@ -67,18 +80,14 @@ export default function Profile() {
 
     useEffect(() => {
         fetchProfile();
-        fetchPosts();
-        fetchLikedPosts();
     }, []);
 
-    const climbs = [
-        { username: 'annie', location: "nyc", description: "this is my first climb! wefkhefawkjheawfkjhlfdfaskhjfa", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
-        { username: 'hi', location: "bos", description: "this is my second climb!", climbType: "Overhang", angle: 15, photo: '../images/shoe1.png', likes: 15 },
-        { username: 'hello', location: "la", description: "this is my third climb!", climbType: "Cave", angle: 5, photo: '../images/test.png', likes: 30 },
-        { username: 'chicken', location: "sf", description: "this is my fourth climb!", climbType: "Overhang", angle: 10, photo: '../images/shoe.png', likes: 20 },
-        { username: 'wings', location: "nyc", description: "this is my fifth climb!", climbType: "Slab", angle: 5, photo: '../images/test.png', likes: 5 },
-        { username: 'tenders', location: "la", description: "this is my sixth climb!", climbType: "Overhang", angle: 19, photo: '../images/hoodie1.png', likes: 0 }
-    ];
+    useEffect(() => {
+        if (currentUser) {
+            fetchPosts();
+            fetchLikedPosts();
+        }
+    }, [currentUser]);
 
     return (
         <div id="profile" className="py-4" style={{ padding: '15px' }}>

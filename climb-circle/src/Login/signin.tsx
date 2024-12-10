@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {setCurrentUser} from "./reducer";
 import {useDispatch} from "react-redux";
 import * as client from "./client";
@@ -15,6 +15,8 @@ export default function SignIn() {
         navigate(`/Home/${user.username}`);
         const closeButton = document.querySelector('#signin-modal .btn-close') as HTMLElement;
         closeButton?.click();
+        console.log("siginin")
+        window.location.reload();
     }
 
     return (

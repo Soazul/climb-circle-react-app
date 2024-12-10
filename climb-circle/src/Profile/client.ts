@@ -6,16 +6,16 @@ const PROFILE_API = `${REMOTE_SERVER}/api/users`;
 
 export const isFollowing = async (userId: any) => {
     console.log("isFollowing");
-    const response = await axios.get(`${PROFILE_API}/${userId}/isFollowing`);
+    const response = await axiosWithCredentials.get(`${PROFILE_API}/${userId}/isFollowing`);
     return response.data.isFollowing;
 };
 
 export const followUser = async (userId: any) => {
     console.log("followUser");
-    await axios.post(`${PROFILE_API}/${userId}/follow`);
+    await axiosWithCredentials.post(`${PROFILE_API}/${userId}/follow`);
 };
 
 export const unfollowUser = async (userId: any) => {
     console.log("unfollowUser");
-    await axios.post(`${PROFILE_API}/${userId}/unfollow`);
+    await axiosWithCredentials.post(`${PROFILE_API}/${userId}/unfollow`);
 };

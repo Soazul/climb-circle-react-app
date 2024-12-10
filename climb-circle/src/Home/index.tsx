@@ -12,10 +12,22 @@ import { useEffect, useState } from "react";
 import { setPosts } from './reducer';
 import * as client from "./client";
 import PostModal from './Card/PostModal';
+import * as loginClient from "../Login/client";
+import { setCurrentUser } from '../Login/reducer';
+
+interface User {
+    username: string;
+};
 
 export default function Home() {
-    const dispatch = useDispatch();
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const dispatch = useDispatch();    
+    const [currentUser, setCurrentUser] = useState<User|null>(null);
+    
+    const fetchUser = async () => {
+        const user = await loginClient.fetchCurrentUser();
+        setCurrentUser(user);
+    };
+
     const posts = useSelector((state: any) => state.postsReducer.posts);
     const climbs = [
         { username: 'annie', location: "nyc", description: "this is my first climb!asdffasfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
@@ -46,9 +58,11 @@ export default function Home() {
     const fetchPosts = async () => {
         const data = await client.fetchPosts();
         dispatch(setPosts(data));
-    }
+    };
+
     useEffect(() => {
         fetchPosts();
+        fetchUser();
     }, []);
 
     return (
