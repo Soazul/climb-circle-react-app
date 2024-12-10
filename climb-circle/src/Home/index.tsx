@@ -16,12 +16,12 @@ import * as loginClient from "../Login/client";
 
 interface User {
     username: string;
+    _id: string;
 };
 
 export default function Home() {
     const dispatch = useDispatch();    
     const [currentUser, setCurrentUser] = useState<User|null>(null);
-    const [explorePost, setExplorePosts] = useState<any[]>([]);
     const fetchUser = async () => {
         const user = await loginClient.fetchCurrentUser();
         setCurrentUser(user);
@@ -46,26 +46,31 @@ export default function Home() {
         setActiveLink(link);
     };
 
-    // const fetchFollowingPosts = async () => {
-    //     const data = await client.findFollowingPosts();
-    //     dispatch(setPosts(data));
-    // };
-
-    // const fetchExplorePosts = async () => {
-        
-    //     dispatch(setExplorePosts(data));
-    // }
     const fetchPosts = async () => {
         const data = await client.fetchPosts();
         dispatch(setPosts(data));
     };
 
+    const fetchActivePosts = async () => {
+        if (!currentUser) {
+            fetchPosts();
+        } else if (activeLink === 'following') {
+            const data = await client.findFollowingPosts(currentUser._id);
+            dispatch(setPosts(data));
+        } else if (activeLink === 'explore') {
+            const data = await client.findExplorePosts(currentUser._id);
+            dispatch(setPosts(data));
+        }
+    };
+
     useEffect(() => {
-        // fetchFollowingPosts();
-        // fetchExplorePosts();
-        fetchPosts();
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        fetchActivePosts();
+    }, [currentUser, activeLink]);
+
 
     return (
         <Session>
