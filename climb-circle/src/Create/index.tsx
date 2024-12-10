@@ -21,7 +21,8 @@ export default function Create() {
         angle: "",
         photo: "",
         fileName: "",
-        postType: "Climb" 
+        postType: "Climb",
+        likes: []
     };
 
     const [post, setPost] = useState(initialPostState);

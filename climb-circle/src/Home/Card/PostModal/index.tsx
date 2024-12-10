@@ -16,7 +16,9 @@ export default function PostModal({username, location, description, climbType, a
 
     const dispatch = useDispatch();
     const fetchPosts = async () => {
-        const data = await client.findPostsByUserId(currentUser._id);
+        // const data = await client.findPostsByUserId(currentUser._id);
+        const data = await client.fetchPosts();
+        console.log("junk", currentUser);
         dispatch(setPosts(data));
     }
     useEffect(() => {
@@ -36,7 +38,7 @@ export default function PostModal({username, location, description, climbType, a
 
     const savePost = async (post: any) => {
         try {
-            await client.updatePost(_id, post); 
+            await client.updatePost(_id, post);
             const updatedPosts = await client.fetchPosts();
             dispatch(setPosts(updatedPosts));
         } catch (error) {
