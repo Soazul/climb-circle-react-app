@@ -15,7 +15,6 @@ export default function SignIn() {
         navigate(`/Home/${user.username}`);
         const closeButton = document.querySelector('#signin-modal .btn-close') as HTMLElement;
         closeButton?.click();
-        console.log("siginin")
         window.location.reload();
     }
 

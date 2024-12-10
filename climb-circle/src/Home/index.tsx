@@ -13,7 +13,6 @@ import { setPosts } from './reducer';
 import * as client from "./client";
 import PostModal from './Card/PostModal';
 import * as loginClient from "../Login/client";
-import { setCurrentUser } from '../Login/reducer';
 
 interface User {
     username: string;
@@ -22,21 +21,13 @@ interface User {
 export default function Home() {
     const dispatch = useDispatch();    
     const [currentUser, setCurrentUser] = useState<User|null>(null);
-    
+    const [explorePost, setExplorePosts] = useState<any[]>([]);
     const fetchUser = async () => {
         const user = await loginClient.fetchCurrentUser();
         setCurrentUser(user);
     };
 
     const posts = useSelector((state: any) => state.postsReducer.posts);
-    const climbs = [
-        { username: 'annie', location: "nyc", description: "this is my first climb!asdffasfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf", climbType: "Slab", angle: 20, photo: '../images/test.png', likes: 5 },
-        { username: 'hi', location: "bos", description: "this is my second climb!", climbType: "Overhang", angle: 15, photo: '../images/shoe1.png', likes: 15 },
-        { username: 'hello', location: "la", description: "this is my third climb!", climbType: "Cave", angle: 5, photo: '../images/test.png', likes: 30 },
-        { username: 'chicken', location: "sf", description: "this is my fourth climb!", climbType: "Overhang", angle: 10, photo: '../images/shoe.png', likes: 20 },
-        { username: 'wings', location: "nyc", description: "this is my fifth climb!", climbType: "Slab", angle: 5, photo: '../images/test.png', likes: 5 },
-        { username: 'tenders', location: "la", description: "this is my sixth climb!", climbType: "Overhang", angle: 19, photo: '../images/hoodie1.png', likes: 0 }
-    ];
     const [activeLink, setActiveLink] = useState('following');
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,12 +46,23 @@ export default function Home() {
         setActiveLink(link);
     };
 
+    // const fetchFollowingPosts = async () => {
+    //     const data = await client.findFollowingPosts();
+    //     dispatch(setPosts(data));
+    // };
+
+    // const fetchExplorePosts = async () => {
+        
+    //     dispatch(setExplorePosts(data));
+    // }
     const fetchPosts = async () => {
         const data = await client.fetchPosts();
         dispatch(setPosts(data));
     };
 
     useEffect(() => {
+        // fetchFollowingPosts();
+        // fetchExplorePosts();
         fetchPosts();
         fetchUser();
     }, []);
@@ -105,11 +107,6 @@ export default function Home() {
                         <Link to="#" style={{ textDecoration: 'none', color: activeLink === 'explore' ? '#0023D3' : '#A3B1BE' }} onClick={() => handleLinkClick('explore')}>Explore</Link>
                     </div>)}
                 <div className="row g-3">
-                    {/* {climbs.map((post: any) => (
-                    <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
-                        <Card username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)}/>
-                    </div>
-                ))} */}
                     {posts.map((post: any) => (
                         <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>
                             <Card postId={post._id} username={post.username} location={post.location} description={post.description} climbType={post.climbType} angle={post.angle} photo={post.photo} likes={post.likes} onClick={() => handleCardClick(post)} />

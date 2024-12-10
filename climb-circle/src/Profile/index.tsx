@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as usersClient from "../Login/client";
-import { setCurrentUser } from "../Login/reducer";
 import { PencilFill } from 'react-bootstrap-icons';
 import PostModal from '../Home/Card/PostModal';
 import { setPosts } from '../Home/reducer';
@@ -42,7 +41,7 @@ export default function Profile() {
             setCurrentUser(user);
             setProfile(user);
         } catch {
-            navigate("/Home"); // Redirect if fetching user fails
+            navigate("/Home"); 
         }
     };
 
@@ -150,11 +149,29 @@ export default function Profile() {
                 </div>
             </div>
             {currentUser && (
-                <div className="d-flex mb-4 ms-2">
-                    <Link to="#" className="me-3" style={{ textDecoration: 'none', color: activeTab === 'posts' ? '#0023D3' : '#A3B1BE'}} onClick={() => setActiveTab('posts')}>Your Posts</Link>
-                    <Link to="#" style={{textDecoration: 'none', color: activeTab === 'liked' ? '#0023D3' : '#A3B1BE'}} onClick={() => setActiveTab('liked')}>Liked Posts</Link>
-                </div>
-            )}
+    <div className="d-flex mb-4 ms-2">
+        <Link 
+            to="#" 
+            className="me-3" 
+            style={{ textDecoration: 'none', color: activeTab === 'posts' ? '#0023D3' : '#A3B1BE' }} 
+            onClick={() => {
+                setActiveTab('posts'); 
+                // window.location.reload();
+            }}
+        >
+            Your Posts
+        </Link>
+        <Link 
+            to="#" 
+            style={{ textDecoration: 'none', color: activeTab === 'liked' ? '#0023D3' : '#A3B1BE' }} 
+            onClick={() => {setActiveTab('liked');
+                // window.location.reload();
+            }}
+        >
+            Liked Posts
+        </Link>
+    </div>
+)}
             <div className="row g-3">
                 {activeTab === 'posts' && posts.map((post: any) => (
                     <div className="col-12 col-md-6 col-lg-4 mb-2" key={post._id}>

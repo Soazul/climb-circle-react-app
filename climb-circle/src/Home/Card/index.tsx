@@ -1,12 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import * as likesClient from "./likesClient"
+import * as loginClient from "../../Login/client";
+
+interface User {
+    username: string;
+    _id: string;
+};
 
 export default function Card({ postId, username, location, description, climbType, angle, likes, photo, onClick }:
     { postId: any, username: string, location: string, description: string, climbType?: string, angle?: number, photo: string, likes: Array<any>, onClick: () => void }) {
+    
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    console.log(likes);
+    // const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+    // const fetchUser = async () => {
+    //     const user = await loginClient.fetchCurrentUser();
+    //     setCurrentUser(user);
+    // };
+
+    // useEffect(() => {
+    //     fetchUser();
+    // }, []);
+
     const [liked, setLiked] = useState(() => likes.includes(currentUser?._id));
     const [likeCount, setLikeCount] = useState(likes.length);
 
@@ -14,10 +31,9 @@ export default function Card({ postId, username, location, description, climbTyp
         e.stopPropagation();
 
         if (!currentUser) {
-            // Trigger the sign-in modal using data attributes
             const signInButton = document.querySelector<HTMLButtonElement>('[data-bs-target="#signin-modal"]');
             if (signInButton) {
-                signInButton.click(); // Simulate a click on the Sign In button to open the modal
+                signInButton.click();
             }
             return;
         }

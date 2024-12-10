@@ -2,13 +2,16 @@ import Card from '../Home/Card';
 import Header from '../Header';
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import * as usersClient from "../Login/client";
+import * as loginClient from "../Login/client";
 import * as postClient from "../Home/client";
 import PostModal from '../Home/Card/PostModal';
 import * as profileClient from "./client";
-import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../Login/reducer";
+import { Link } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
+
+interface User {
+    username: string;
+};
 
 export default function UserProfile() {
     const { userId } = useParams();
@@ -17,12 +20,16 @@ export default function UserProfile() {
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
-    const dispatch = useDispatch();
+    const [currentUser, setCurrentUser] = useState<User|null>(null);
+    
+    const fetchUser = async () => {
+        const user = await loginClient.fetchCurrentUser();
+        setCurrentUser(user);
+    };
 
     const fetchUserProfile = async (userId?: any) => {
-        const userProfile = await usersClient.findUserById(userId);
+        const userProfile = await loginClient.findUserById(userId);
         console.log(userProfile.followers.length);
-        
         setProfile(userProfile);
     };
 
@@ -59,6 +66,7 @@ export default function UserProfile() {
         fetchUserProfile(userId);
         fetchUserPosts(userId);
         fetchFollowStatus();
+        fetchUser();
     }, [userId]);
 
     return (
@@ -66,6 +74,13 @@ export default function UserProfile() {
             {isModalOpen && (<div className="backdrop-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1 }}></div>)}
             <div className="row mb-4 mt-4 header-container">
                 <Header />
+                <div className="col-12 col-md-6 text-end d-flex justify-content-end align-items-center">
+                    {currentUser && (
+                        <Link to={`/Profile/${currentUser.username}`} className="d-flex align-items-center">
+                                <FaUserCircle size="30px" />
+                        </Link>
+                    )}
+                </div>
             </div>
             <div className="d-flex justify-content-center">
                 <div className="col-12 col-md-6 mb-3">

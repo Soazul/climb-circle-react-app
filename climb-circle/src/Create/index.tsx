@@ -1,15 +1,30 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addPost } from "../Home/reducer";
 import * as client from "../Home/client";
 import { ObjectId } from "bson";
+import * as loginClient from "../Login/client";
+
+interface User {
+    username: string;
+    role: string;
+    _id: string;
+};
 
 export default function Create() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const isMember = currentUser.role === "Member";
+    const [currentUser, setCurrentUser] = useState<User|null>(null);
+    const fetchUser = async () => {
+        const user = await loginClient.fetchCurrentUser();
+        setCurrentUser(user);
+    };
+    useEffect(() => {
+        fetchUser();
+    }, []);
+
+    const isMember = currentUser?.role === "Member";
     const initialPostState = {
         username: currentUser?.username,
         user: currentUser?._id,

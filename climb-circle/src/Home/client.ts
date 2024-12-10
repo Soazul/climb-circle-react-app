@@ -2,7 +2,6 @@ import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
-const USERS_API = `${REMOTE_SERVER}/api/users`;
 const POSTS_API = `${REMOTE_SERVER}/api/posts`;
 
 export const createPost = async (post: any) => {
@@ -33,4 +32,14 @@ export const findPostsByUserId = async (userId: string) => {
 export const findLikedPostsByUserId = async (userId: string) => {
     const response = await axiosWithCredentials.get(`${POSTS_API}/${userId}/posts/liked`);
     return response.data;
-}
+};
+
+export const findFollowingPosts = async (userId: string) => {
+    const response = await axiosWithCredentials.get(`${POSTS_API}/${userId}/following/posts`)
+    return response.data;
+};
+
+export const findExplorePosts = async (userId: string) => {
+    const response = await axiosWithCredentials.get(`${POSTS_API}/${userId}/explore/posts`)
+    return response.data;
+};

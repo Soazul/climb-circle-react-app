@@ -14,6 +14,7 @@ export default function SignUp() {
         navigate(`/Home/${user.username}`);
         const closeButton = document.querySelector('#signup-modal .btn-close') as HTMLElement;
         closeButton?.click();
+        window.location.reload();
     }
 
     return (

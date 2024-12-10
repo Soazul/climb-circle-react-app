@@ -1,16 +1,31 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from "react-redux";
+import * as loginClient from "../Login/client";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as client from "./client"
 
+interface User {
+    username: string;
+};
+
 export default function Header() {
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    // const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const [currentUser, setCurrentUser] = useState<User|null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const navigate = useNavigate();
+    
+    const fetchUser = async () => {
+        const user = await loginClient.fetchCurrentUser();
+        setCurrentUser(user);
+    };
 
+    useEffect(() => {
+        fetchUser();
+    }, []);
+    
     useEffect(() => {
         if (searchQuery.trim()) {
             const fetchUsers = async () => {

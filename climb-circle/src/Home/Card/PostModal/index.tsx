@@ -1,8 +1,8 @@
 import { FaHeart } from 'react-icons/fa';
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import * as client from "../../client";
 import { setPosts } from '../../reducer';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
 export default function PostModal({username, location, description, climbType, angle, photo, likes, isEditing, _id, cost, eventDate, onClose }: 
     { username: string | null, location: string | null, description: string | null, climbType: string | null, angle: number | null, photo: string | null, likes: Array<any> | null, isEditing: boolean, _id: string, cost: number | null, eventDate: string | null,  onClose: () => void}) {
@@ -12,23 +12,13 @@ export default function PostModal({username, location, description, climbType, a
     const [angleState, setAngleState] = useState(angle || 0);
     const [costState, setCostState] = useState(cost || 0);
     const [eventDateState, setEventDateState] = useState(eventDate || "");
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     const dispatch = useDispatch();
-    const fetchPosts = async () => {
-        // const data = await client.findPostsByUserId(currentUser._id);
-        const data = await client.fetchPosts();
-        console.log("junk", currentUser);
-        dispatch(setPosts(data));
-    }
-    useEffect(() => {
-        fetchPosts();
-    }, []);
 
     const deletePost = async (postId: string) => {
         try {
             await client.deletePost(postId); 
-            const updatedPosts = await client.fetchPosts();
+            const updatedPosts = client.findPostsByUserId(_id);
             dispatch(setPosts(updatedPosts)); 
             onClose(); 
         } catch (error) {
@@ -39,7 +29,7 @@ export default function PostModal({username, location, description, climbType, a
     const savePost = async (post: any) => {
         try {
             await client.updatePost(_id, post);
-            const updatedPosts = await client.fetchPosts();
+            const updatedPosts = client.findPostsByUserId(_id);
             dispatch(setPosts(updatedPosts));
         } catch (error) {
             console.log(error);
@@ -57,7 +47,7 @@ export default function PostModal({username, location, description, climbType, a
             eventDate: eventDateState,
             photo,
             likes,
-            username: currentUser.username
+            username: username
         };
         savePost({ ...newPost, _id: _id })
         onClose(); 
