@@ -171,9 +171,6 @@ export default function Map() {
                     'N/A'
                   )}
                 </p>
-                <p>
-                  <strong>Profile: View Profile</strong>
-                </p>
                 <Link to={`/Map/Details/${place.place_id}`} className="btn btn-primary mt-2">
                   View Details
                 </Link>

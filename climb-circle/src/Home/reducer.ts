@@ -20,7 +20,8 @@ const postsSlice = createSlice({
         angle: post.angle,
         photo: post.photo,
         cost: post.cost,
-        eventDate: post.eventDate
+        eventDate: post.eventDate,
+        likes: post.likes
       };
       state.posts = [...state.posts, newPost] as any;
     },

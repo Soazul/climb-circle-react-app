@@ -6,6 +6,7 @@ import * as likesClient from "./likesClient"
 export default function Card({ postId, username, location, description, climbType, angle, likes, photo, onClick }:
     { postId: any, username: string, location: string, description: string, climbType?: string, angle?: number, photo: string, likes: Array<any>, onClick: () => void }) {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+    console.log(likes);
     const [liked, setLiked] = useState(() => likes.includes(currentUser?._id));
     const [likeCount, setLikeCount] = useState(likes.length);
 
