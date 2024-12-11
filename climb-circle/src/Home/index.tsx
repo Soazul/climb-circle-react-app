@@ -22,7 +22,7 @@ export default function Home() {
         setCurrentUser(user);
     };
 
-    const posts = useSelector((state: any) => state.postsReducer.posts);
+    const [posts, setPosts] = useState<any>([]);
     const [activeLink, setActiveLink] = useState('explore');
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +43,8 @@ export default function Home() {
 
     const fetchPosts = async () => {
         const data = await client.fetchPosts();
-        dispatch(setPosts(data));
+        // dispatch(setPosts(data));
+        setPosts(data);
     };
 
     const fetchActivePosts = async () => {
@@ -51,10 +52,12 @@ export default function Home() {
             fetchPosts();
         } else if (activeLink === 'following') {
             const data = await client.findFollowingPosts(currentUser._id);
-            dispatch(setPosts(data));
+            // dispatch(setPosts(data));
+            setPosts(data);
         } else if (activeLink === 'explore') {
             const data = await client.findExplorePosts(currentUser._id);
-            dispatch(setPosts(data));
+            // dispatch(setPosts(data));
+            setPosts(data);
         }
     };
 

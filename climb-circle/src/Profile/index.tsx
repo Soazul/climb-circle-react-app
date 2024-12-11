@@ -11,6 +11,7 @@ import PostModal from '../Home/Card/PostModal';
 import { setPosts } from '../Home/reducer';
 import * as postClient from "../Home/client";
 import * as loginClient from "../Login/client";
+import * as client from "./client";
 
 interface User {
     _id: string;
@@ -27,7 +28,8 @@ export default function Profile() {
     const [isEditingPassword, setIsEditingPassword] = useState<boolean>(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { posts } = useSelector((state: any) => state.postsReducer);
+    // const { posts } = useSelector((state: any) => state.postsReducer);
+    const [posts, setPosts] = useState<any[]>([]);
 
     const updateProfile = async () => {
         const updatedProfile = await usersClient.updateUser(profile);
@@ -35,6 +37,17 @@ export default function Profile() {
         setIsEditingUsername(false);
         setIsEditingPassword(false);
     };
+
+    const updateUserPosts = async () => {
+        if (!currentUser) return;
+        try {
+            console.log(currentUser);
+            await client.updatePostUsernames(currentUser._id, profile.username);
+            fetchPosts();
+        } catch (err) {
+            console.error("Failed to update user posts:", err);
+        }
+    }
 
     const fetchProfile = async () => {
         try {
@@ -55,13 +68,13 @@ export default function Profile() {
     const fetchPosts = async () => {
         if (!currentUser) return;
         const data = await postClient.findPostsByUserId(currentUser._id);
-        dispatch(setPosts(data));
+        // dispatch(setPosts(data));
+        setPosts(data);
     };
 
     const fetchLikedPosts = async () => {
         if (currentUser) {
             const data = await postClient.findLikedPostsByUserId(currentUser._id);
-            console.log(currentUser.likedPosts);
             setLikedPosts(data);
         }
     };
@@ -121,6 +134,7 @@ export default function Profile() {
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         updateProfile();
+                                        updateUserPosts();
                                     }
                                 }}
                                 style={{ fontSize: '20px', padding: '1px' }}

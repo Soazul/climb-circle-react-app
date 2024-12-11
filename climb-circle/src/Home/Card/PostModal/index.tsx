@@ -19,7 +19,8 @@ export default function PostModal({username, location, description, climbType, a
             await client.deletePost(postId); 
             const updatedPosts = client.findPostsByUserId(_id);
             dispatch(setPosts(updatedPosts)); 
-            onClose(); 
+            onClose();
+            window.location.reload();
         } catch (error) {
             console.log(error); 
         }
@@ -30,6 +31,7 @@ export default function PostModal({username, location, description, climbType, a
             await client.updatePost(_id, post);
             const updatedPosts = client.findPostsByUserId(_id);
             dispatch(setPosts(updatedPosts));
+            window.location.reload();
         } catch (error) {
             console.log(error);
         }
