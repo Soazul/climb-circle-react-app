@@ -12,7 +12,6 @@ export default function PostModal({username, location, description, climbType, a
     const [angleState, setAngleState] = useState(angle || 0);
     const [costState, setCostState] = useState(cost || 0);
     const [eventDateState, setEventDateState] = useState(eventDate || "");
-
     const dispatch = useDispatch();
 
     const deletePost = async (postId: string) => {
@@ -126,7 +125,7 @@ export default function PostModal({username, location, description, climbType, a
                                     </>
                                 )}
 
-                    {cost && cost != null &&(
+                    {cost && cost != null && cost !== 0 && (
                         <div className="row mb-2">
                             <div className="col-6">
                                 <label htmlFor="cost" className="form-label">Cost</label>

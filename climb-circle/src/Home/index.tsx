@@ -14,22 +14,16 @@ import * as client from "./client";
 import PostModal from './Card/PostModal';
 import * as loginClient from "../Login/client";
 
-interface User {
-    username: string;
-    _id: string;
-};
-
 export default function Home() {
     const dispatch = useDispatch();    
     const [currentUser, setCurrentUser] = useState<any|null>(null);
-    const [explorePost, setExplorePosts] = useState<any[]>([]);
     const fetchUser = async () => {
         const user = await loginClient.fetchCurrentUser();
         setCurrentUser(user);
     };
 
     const posts = useSelector((state: any) => state.postsReducer.posts);
-    const [activeLink, setActiveLink] = useState('following');
+    const [activeLink, setActiveLink] = useState('explore');
     const [selectedPost, setSelectedPost] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -109,8 +103,8 @@ export default function Home() {
                 </div>
                 {currentUser && (
                     <div className="d-flex mb-4 ms-2">
-                        <Link to="#" className="me-3" style={{ textDecoration: 'none', color: activeLink === 'following' ? '#0023D3' : '#A3B1BE' }} onClick={() => handleLinkClick('following')}>Following</Link>
-                        <Link to="#" style={{ textDecoration: 'none', color: activeLink === 'explore' ? '#0023D3' : '#A3B1BE' }} onClick={() => handleLinkClick('explore')}>Explore</Link>
+                        <Link to="#" className="me-3"style={{ textDecoration: 'none', color: activeLink === 'explore' ? '#0023D3' : '#A3B1BE' }} onClick={() => handleLinkClick('explore')}>Explore</Link>
+                        <Link to="#" style={{ textDecoration: 'none', color: activeLink === 'following' ? '#0023D3' : '#A3B1BE' }} onClick={() => handleLinkClick('following')}>Following</Link>
                     </div>)}
                 <div className="row g-3">
                     {posts.map((post: any) => (

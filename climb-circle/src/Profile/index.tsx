@@ -184,7 +184,6 @@ export default function Profile() {
                         Favorite Gyms
                     </Link>
                 </div>
-
             )}
             <div className="row g-3">
                 {activeTab === 'posts' && posts.map((post: any) => (
